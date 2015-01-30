@@ -9,9 +9,9 @@ def icecore_sensor(time,d18O,alt_diff=0.):
 
     DESCRIPTION:
     The ice core sensor model calculates precipitation-weighted
-    δ18OP (i.e. isotope ratio is weighted by the amount of precipitation that accumulates)
-    and corrects for temperature and altitude bias between model and site (−0.5/◦C [Yurtsever, 1975],
-    −0.3/100m [Vo- gel et al., 1975]).
+    del18OP (i.e. isotope ratio is weighted by the amount of precipitation that accumulates)
+    and corrects for temperature and altitude bias between model and site (0.5/C [Yurtsever, 1975],
+    0.3/100m [Vo- gel et al., 1975]).
 
     CITATION: Yurtsever, Y., Worldwide survey of stable isotopes in precipitation., Rep. Isotope Hydrology Section, IAEA, 1975.
 
