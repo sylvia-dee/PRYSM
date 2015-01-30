@@ -1,4 +1,4 @@
-# Sylvia Dee 
+# Sylvia Dee
 # PSM d18O Ice Cores
 # ENVIRONMENT SUB-MODEL
 # a.k.a. driver script
@@ -12,7 +12,7 @@
         Isotope-Enabled GCM INPUTS:
         T       (Temperature, K)
         P       (Pressure, Atm)
-        d18O    (Precipitation, permil) 
+        d18O    (Precipitation, permil)
 
     Wrapper script runs the following submodels:
 
@@ -20,37 +20,39 @@
     icecore_archive (diffusion, compaction)
     icecore_bam     (time uncertainties, analytical uncertainties)
 
-    OUTPUTS: 
+    OUTPUTS:
         d18O Ice Core Timeseries
 """
 #======================================================================
 # E0. Initialization
 #======================================================================
-from pydap.client import open_url  
+#from pydap.client import open_url
 from pylab import *
 import numpy as np
 import matplotlib.pyplot as plt
+from psm.icecore.sensor import icecore_sensor
 
 #======================================================================
 # E1. Load input data/all environmental variables (annual averages)
 #======================================================================
 
 # LOAD TESTER FILES (OPTIONAL) or input your own data here.
+datadir='test_data_icecore/'
 
 # Near-Surface Air Temp [K]
-T=np.load('temperature.npy')
+T=np.load(datadir+'temperature.npy')
 
 # Accumulation Rate [m]
-accum=np.load('accumulation.npy')
+accum=np.load(datadir+'accumulation.npy')
 
 # Core Depth
-depth=np.load('total_icecore_depth.npy')
+depth=np.load(datadir+'total_icecore_depth.npy')
 
 # Depth horizons (accumulation per year corresponding to depth moving down-core)
-depth_horizons=np.load('depth_horizons.npy')
+depth_horizons=np.load(datadir+'depth_horizons.npy')
 
 #delta-18-O of precipitation (weighted) [permil]
-d18Op=np.load('d18O_P.npy')
+d18Op=np.load(datadir+'d18O_P.npy')
 
 # Mean Surface Pressure [Atm]
 P=1.0
@@ -84,9 +86,9 @@ d18Oice  = icecore_sensor(time,d18O,alt_diff)
 # E4. CALL ARCHIVE MODEL
 #======================================================================
 
-# This archive model will calculate diffusion and compaction 
+# This archive model will calculate diffusion and compaction
 # (Please see docstrings: diffusivity, icecore_diffuse)
- 
+
 # NOTE: tester file has accumulation in meters per year. Below is optional unit conversion.
 
 #accum=accum*365.0       # multiple by 365 days to get yearly accumulation in mm
@@ -128,18 +130,18 @@ tp, Xp, tmc=bam_simul_perturb(X,t,param=[0.01,0.01],name='poisson',ns=1000,resiz
 sigma=0.1 # permil, measurement  precision
 ice_upper, ice_lower = analytical_err_simple(X,sigma)
 
-#5.2.2 Gaussian Noise Model for analytical error: 
+#5.2.2 Gaussian Noise Model for analytical error:
 sigma=0.1
-nsamples = ## enter number of samples here
+#nsamples = ## enter number of samples here
 ice_Xn=analytical_error(X,sigma)
 #======================================================================
-# PLOTTING EXAMPLES 
+# PLOTTING EXAMPLES
 #======================================================================
 
 # Example 1: Diffusion Profiles
 
 diffs =((np.diff(z)/np.diff(time_d)))
-diffs=diffs[0:-1] 
+diffs=diffs[0:-1]
 # row and column sharing
 f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
 ax1.plot(z[0:-1],D*1e4)
@@ -172,7 +174,7 @@ quel=ice_diffused
 
 for i in range(len(bam[1])):
     plt.plot(bam[:,i],depths,color='0.75')
-    
+
 plt.rcParams['text.usetex']=True
 plt.rcParams['text.latex.unicode']=True
 plt.rcParams['font.family']='serif'
