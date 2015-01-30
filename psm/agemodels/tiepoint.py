@@ -24,7 +24,7 @@
         ageSds      A vector of 1-sigma values for the ages given above
         positions   Position values (e.g. depths) for each age
         positionThicknesses (optional) Thickness values for each of the positions. By default set to zero
-        calCurves   A vector of values containing either ’intcal13’, ’shcal13’, ’marine13’, or ’normal’.
+        calCurves   A vector of values containing either intcal13, shcal13, marine13, or normal.
                     Should be the same length the number of ages supplied. Non-standard
                     calibration curves can be used provided they are supplied in the same format
                     as those previously mentioned and are placed in the same directory. Normal
