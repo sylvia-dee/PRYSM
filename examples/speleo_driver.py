@@ -1,10 +1,10 @@
-# This is a driver script for the Proxy System Model 
+# This is a driver script for the Proxy System Model
 # of the d18O of  Speleothem Calcite
 # Created 10/28/2014 by Julien Emile-Geay (julieneg@usc.edu)
 # Modified 01/27/2015 by Sylvia Dee <sdee@usc.edu>
 #==============================================================
 """
-Driver for Speleothem Calcite  Model 
+Driver for Speleothem Calcite  Model
 ~ Load Environmental Variables to compute d18O calcite/dripwater.
 
 Required Isotope-Enabled GCM INPUTS for PSM:
@@ -18,14 +18,14 @@ Temperature (K)
 #==============================================================
 # E0. Initialization
 #==============================================================
-from __future__ import unicode_literals
+#from __future__ import unicode_literals #unused AAA
 import numpy as np
 import matplotlib.pyplot as plt
 # fix the path before you can use those
-import nitime.algorithms as tsa
-import nitime.utils as utils
-import butter_lowpass_filter as bwf
-from sensor import *
+#import nitime.algorithms as tsa #unused AAA
+#import nitime.utils as utils #unused AAA
+import psm.aux_functions.butter_lowpass_filter as bwf
+from psm.speleo.sensor import *
 
 #==============================================================
 # E1. Load input data
@@ -34,14 +34,14 @@ from sensor import *
 # Note: for the tester files, the data corresponds to Borneo
 # output is from SPEEDY-IER
 # USER should please load your own data here!
-
+datadir='test_data_speleo/'
 cave_data = {}
-cave_data['dO18_prcp'] = np.load('B_PISO.npy')
-cave_data['dO18_soil'] = np.load('B_SISO.npy')
-cave_data['temp']      = np.load('B_T.npy')
-cave_data['prcp']      = np.load('B_PRCP.npy')
+cave_data['dO18_prcp'] = np.load(datadir+'B_PISO.npy')
+cave_data['dO18_soil'] = np.load(datadir+'B_SISO.npy')
+cave_data['temp']      = np.load(datadir+'B_T.npy')
+cave_data['prcp']      = np.load(datadir+'B_PRCP.npy')
 
-# define time axis 
+# define time axis
 t=np.arange(1000,2005,1.0)
 
 #==========================================================================
@@ -52,8 +52,8 @@ Pe   = 1.0  # Peclet number
 tau0 = 1.0  # mean aquifer transit time
 d18Op = np.array(cave_data['dO18_prcp'])
 d18Os = np.array(cave_data['dO18_soil'])
-T     = np.array(cave_data['temp'])   
-P     = np.array(cave_data['prcp']) 
+T     = np.array(cave_data['temp'])
+P     = np.array(cave_data['prcp'])
 
 #  Apply two different catchment models with Tau = 1.0 years, 5.0 years
 d18O_wm1, d18O_wmK1, hwm1 = speleo_sensor(t,d18Os,T,'Well-Mixed',1.0)
@@ -70,9 +70,9 @@ Tl = bwf.filter(T,fc)
 Pl = bwf.filter(P,fc)
 d18Opl = bwf.filter(d18Op,fc)
 d18Osl = bwf.filter(d18Os,fc)
-K1     = bwf.filter(d18O_wm1,fc) 
+K1     = bwf.filter(d18O_wm1,fc)
 K2     = bwf.filter(d18O_ad1,fc)
-K3     = bwf.filter(d18O_wm2,fc) 
+K3     = bwf.filter(d18O_wm2,fc)
 K4     = bwf.filter(d18O_ad2,fc)
 
 #==========================================================================
@@ -82,8 +82,8 @@ import analytical_error as err
 import psm_obs_tiepoint as chron
 from rpy2.robjects import FloatVector
 from rpy2.robjects.vectors import StrVector
-import rpy2.robjects as robjects	
-import scipy.interpolate as si	
+import rpy2.robjects as robjects
+import scipy.interpolate as si
 from rpy2.robjects.packages import importr
 from wwz import *
 
@@ -124,12 +124,12 @@ X=d18O_wm1
 sigma=0.1 # permil, measurement  precision
 speleo_upper, speleo_lower = analytical_err_simple(X,sigma)
 
-#3.2.2 Gaussian Noise Model for analytical error: 
+#3.2.2 Gaussian Noise Model for analytical error:
 sigma=0.1
-nsamples = ## enter number of samples here
+#nsamples = ## enter number of samples here
 speleo_Xn=analytical_error(X,sigma)
 #==========================================================================
-#  plot it all away  
+#  plot it all away
 #==========================================================================
 
 #f, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
@@ -139,16 +139,16 @@ speleo_Xn=analytical_error(X,sigma)
 #plt.rcParams['font.family']='serif'
 #
 ##  PHYSICAL VARIABLES
-#ax1.spines["top"].set_visible(False)  
-#ax1.spines["right"].set_visible(False)  
-## Ensure that the axis ticks only show up on the bottom and left of the plot.  
-## Ticks on the right and top of the plot are generally unnecessary chartjunk.  
-#ax1.get_xaxis().tick_bottom()  
-#ax1.get_yaxis().tick_left()  
-#plt.yticks(fontsize=10); plt.xticks(fontsize=10) 
-## Remove the tick marks; they are unnecessary with the tick lines we just plotted.  
-#ax1.tick_params(axis="both", which="both", bottom="on", top="off",  
-#                labelbottom="on", left="on", right="off", labelleft="on",direction="out")  
+#ax1.spines["top"].set_visible(False)
+#ax1.spines["right"].set_visible(False)
+## Ensure that the axis ticks only show up on the bottom and left of the plot.
+## Ticks on the right and top of the plot are generally unnecessary chartjunk.
+#ax1.get_xaxis().tick_bottom()
+#ax1.get_yaxis().tick_left()
+#plt.yticks(fontsize=10); plt.xticks(fontsize=10)
+## Remove the tick marks; they are unnecessary with the tick lines we just plotted.
+#ax1.tick_params(axis="both", which="both", bottom="on", top="off",
+#                labelbottom="on", left="on", right="off", labelleft="on",direction="out")
 #ax1.grid(axis='y')
 #
 #ax1.plot(t,Tl-273.15,lw=1, color='Chocolate', label='Temp')
@@ -162,23 +162,23 @@ speleo_Xn=analytical_error(X,sigma)
 #ax1.set_title('Climate Parameters',fontsize=14)
 #
 ## add precip !!
-#ax1b = ax1.twinx()   
+#ax1b = ax1.twinx()
 #ax1b.plot(t,Pl,lw=1, color='Teal')
 #for tl in ax1b.get_yticklabels():
 #    tl.set_color('Teal')
 #ax1b.set_xlim(1000,2000); ax1b.set_ylim(0,1.5)
 ## label axes
 #ax1b.set_ylabel('Precip (mm/day)',fontsize=11,color='Teal')
-# 
-## GEOCHEMISTRY
-#ax2.spines["top"].set_visible(False)  
-#ax2.spines["right"].set_visible(False)  
-#ax2.get_xaxis().tick_bottom()  
-#ax2.get_yaxis().tick_left()  
 #
-## Remove the tick marks; they are unnecessary with the tick lines we just plotted.  
-#ax2.tick_params(axis="both", which="both", bottom="on", top="off",  
-#                labelbottom="on", left="on", right="off", labelleft="on",direction="out")  
+## GEOCHEMISTRY
+#ax2.spines["top"].set_visible(False)
+#ax2.spines["right"].set_visible(False)
+#ax2.get_xaxis().tick_bottom()
+#ax2.get_yaxis().tick_left()
+#
+## Remove the tick marks; they are unnecessary with the tick lines we just plotted.
+#ax2.tick_params(axis="both", which="both", bottom="on", top="off",
+#                labelbottom="on", left="on", right="off", labelleft="on",direction="out")
 #ax2.grid(axis='y')
 #
 #ax2.plot(t,d18Opl,lw=1, color='Navy', label='Precip')
@@ -191,14 +191,14 @@ speleo_Xn=analytical_error(X,sigma)
 #ax2.set_title('Oxygen isotope source signals',fontsize=14)
 #
 ## SENSOR MODELs
-#ax3.spines["top"].set_visible(False)  
-#ax3.spines["right"].set_visible(False)  
-#ax3.get_xaxis().tick_bottom()  
-#ax3.get_yaxis().tick_left()  
+#ax3.spines["top"].set_visible(False)
+#ax3.spines["right"].set_visible(False)
+#ax3.get_xaxis().tick_bottom()
+#ax3.get_yaxis().tick_left()
 #
-## Remove the tick marks; they are unnecessary with the tick lines we just plotted.  
-#ax3.tick_params(axis="both", which="both", bottom="on", top="off",  
-#                labelbottom="on", left="on", right="off", labelleft="on",direction="out")  
+## Remove the tick marks; they are unnecessary with the tick lines we just plotted.
+#ax3.tick_params(axis="both", which="both", bottom="on", top="off",
+#                labelbottom="on", left="on", right="off", labelleft="on",direction="out")
 #ax3.grid(axis='y')
 #
 #ax3.plot(t,K1,lw=1, color='DarkGreen', label=r'Well-mixed, $\tau_0 = 1$y')
@@ -220,7 +220,7 @@ speleo_Xn=analytical_error(X,sigma)
 #  relationship between d18Oc and precip
 
 #f2, ax = plt.subplots(2, 2)
-#f2.set_figheight(6); f2.set_figwidth(8) 
+#f2.set_figheight(6); f2.set_figwidth(8)
 # d18O rainfall vs rainfall
 #ax[0,0].scatter(Pl,d18Opl,color='IndianRed',alpha=0.5)
 #ax[0,0].set_xlabel('precipitation rate (mm/day)')

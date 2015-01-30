@@ -1,4 +1,4 @@
-# Sylvia Dee 
+# Sylvia Dee
 # PSM d18O Cellulose
 # Driver Script
 # ENVIRONMENT SUB-MODEL
@@ -12,17 +12,17 @@ or use the provided test data.
 
 SPEEDY/GCM INPUTS:
 
-	T		Temperature (K)
-	d18O 	(Soil Water)
-	d18O 	(Ambient Vapor)
-	d18O 	(Precipitation)
-	RH      (Relative Humidity)
+    T       Temperature (K)
+    d18O    (Soil Water)
+    d18O    (Ambient Vapor)
+    d18O    (Precipitation)
+    RH      (Relative Humidity)
 
 This driver script calls the submodels:
 
-	cellulose_sensor
-	cellulose_archive
-	cellulose_obs
+    cellulose_sensor
+    cellulose_archive
+    cellulose_obs
 
 The final output is d18O of cellulose at a given cite, with 1000 plausible chronologies
 given a specified rate of miscount.
@@ -34,39 +34,42 @@ given a specified rate of miscount.
 
 # 0.0 Initialization
 
-from pydap.client import open_url  
+#from pydap.client import open_url #Doesn't look like this is used AAA 
 from pylab import *
 
 import numpy as np
 import matplotlib.pyplot as plt
-
+import psm.cellulose.sensor as cs
 #==============================================================
 # 1.0 Load Test Variables or your own data here:
 #==============================================================
 
+# Example data directory
+datadir='test_data_cellulose/'
+
 # Soil Water Isotope Ratio [permil]
-dS=np.load('d18O_soil.npy')
+d18Os=np.load(datadir+'d18O_soil.npy')
 
 # Precip [mm/day]
-P=np.load('precipitation.npy')
+P=np.load(datadir+'precipitation.npy')
 
 # Near-Surface Relative Humidity [%]
-RH=np.load('relative_hum.npy')
+RH=np.load(datadir+'relative_hum.npy')
 
 # Ambient Vapor Isotope Ratio d18Ov [permil]
 # NOTE: Take out the Lowest (surface) Level only.
-dV=np.load('d18O_vapor.npy')
+d18Ov=np.load(datadir+'d18O_vapor.npy')
 
 # Annual Average Surface Temperature
-T=np.load('temperature.npy')
+T=np.load(datadir+'temperature.npy')
 
 # Precipitation Isotope Ratio [permil]
-d18Op=np.load('d18O_precip.npy')
+d18Op=np.load(datadir+'d18O_precip.npy')
 
 #==============================================================
 # Set time Axis
 #==============================================================
-time = np.arange(1000,2005,1) 
+time = np.arange(1000,2005,1)
 #==============================================================
 # Check dimensions: must be 1-D Vector
 #==============================================================
@@ -80,7 +83,7 @@ time = np.arange(1000,2005,1)
 # Choose location : (test files are for La Selva, Costa Rica)
 
 # Note: you can use cdutil package to pull this from a climate model field:
-# example: 
+# example:
 # >import sys, os, cdtime, cdutil, cdms2, vcs, MV2, time, datetime
 # >las = cdutil.region.domain(latitude=(10.,10.),longitude = (-84.,-84.))
 # >var = GLOBALVAR(las)
@@ -93,13 +96,13 @@ time = np.arange(1000,2005,1)
 # (Please see docstring for cellulose_sensor for instructions).
 
 # UNITS: T[K], P[MM/DAY], RH [%], isotope fields [permil]
-# KWARGS: 	[flag = 1 for Evans Model, 0 for Roden Model]
-#			[iso=true to use isotope fields, false to use T, P fields]	
+# KWARGS:   [flag = 1 for Evans Model, 0 for Roden Model]
+#           [iso=true to use isotope fields, false to use T, P fields]
 
-dcell = cell_sensor(time,T,P,RH,d18Os,d18Op,d18Ov,flag=1.0,iso=True)
+dcell = cs.cellulose_sensor(time,T,P,RH,d18Os,d18Op,d18Ov,flag=1.0,iso=True)
 
 #==============================================================
-# 4. RUN ARCHIVE MODEL 
+# 4. RUN ARCHIVE MODEL
 #==============================================================
 # NOTE: PlACEHOLDER.
 
@@ -109,7 +112,7 @@ dcell = cell_archive()
 # 5. RUN OBSERVATION MODEL
 #==============================================================
 
-# Call function bam_simul_perturb to compute ensemble of plausible 
+# Call function bam_simul_perturb to compute ensemble of plausible
 # age-uncertain records and account for analytical uncertainty.
 
 # 5.1: Ring Miscount Uncertainty Model:
@@ -126,8 +129,8 @@ tp, Xp, tmc = bam_simul_perturb(X,t,param=[0.05,0.05],name='poisson',ns=1000,res
 sigma=0.1 # permil, measurement  precision
 dcell_upper, dcell_lower = analytical_err_simple(X,sigma)
 
-#5.2.2 Gaussian Noise Model for analytical error: 
+#5.2.2 Gaussian Noise Model for analytical error:
 sigma=0.1
-nsamples = ## enter number of samples here
+#nsamples = ## enter number of samples here
 dcell_Xn=analytical_error(X,sigma)
 #==============================================================

@@ -6,50 +6,53 @@
 """
 CORAL PSM DRIVER SCRIPT
 
-Data preparation script to generate simulated proxy data. 
+Data preparation script to generate simulated proxy data.
 This file loads input files and environmental variables and calls
 the forward model functions (sub-models).
 
-This wrapper script prepares forward model environmental input files, which 
-must contain spatial information (lat, lon) and puts them into 
+This wrapper script prepares forward model environmental input files, which
+must contain spatial information (lat, lon) and puts them into
 an appropriate format that the function handles (vectors only)!
 
 Please read docstring carefully for each function call before use.
 
-# CORALS: calculating d18O anomalies from SST and SSS anomalies. 
+# CORALS: calculating d18O anomalies from SST and SSS anomalies.
 """
 #====================================================================
 # 0. Initialization
 #====================================================================
 
-from pydap.client import open_url  
+#from pydap.client import open_url #Unused AAA
 from pylab import *
-import pseudocoral as pc
+from psm.coral.sensor import pseudocoral
 
 #import sys, os, cdtime, cdutil, cdms2, vcs, MV2, time, datetime
 import numpy as np
 import matplotlib.pyplot as plt
 
-from regrid2 import Regridder
-from vcsaddons import EzTemplate
+#from regrid2 import Regridder #Unused AAA
+#from vcsaddons import EzTemplate #Unused AAA
 import scipy.io
-import Scientific.IO.NetCDF as S
+#import Scientific.IO.NetCDF as S #Unused AAA
 
 #====================================================================
 # 1. LOAD CLIMATE FIELDS
 #====================================================================
 
+#Data directory
+datadir='test_data_coral/' #Don't forget the /
+
 # Load SST anomalies [K] (NOTE: THIS SHOULD BE A 1-D VECTOR OF DATA!)
 # yearly
-ssta=np.load('Palmyra_SST_Anomalies_Yearly_850-1850.npy')
+ssta=np.load(datadir+'Palmyra_SST_Anomalies_Yearly_850-1850.npy')
 # monthly
-ssta_m=np.load('Palmyra_SST_Anomalies_Monthly_850-1850.npy')
+ssta_m=np.load(datadir+'Palmyra_SST_Anomalies_Monthly_850-1850.npy')
 
 # Load SSS anomalies [psu] (NOTE: THIS SHOULD BE A 1-D VECTOR OF DATA!)
 # yearly
-sssa=np.load('Palmyra_SSS_Anomalies_Yearly_850-1850.npy')
+sssa=np.load(datadir+'Palmyra_SSS_Anomalies_Yearly_850-1850.npy')
 # monthly
-sssa_m=np.load('Palmyra_SSS_Anomalies_Monthly_850-1850.npy')
+sssa_m=np.load(datadir+'Palmyra_SSS_Anomalies_Monthly_850-1850.npy')
 
 # set time axis
 
@@ -65,8 +68,8 @@ time=np.arange(850,1850,1)
 
 # Enter your coordinates here:
 
-lon=197.92
-lat=5.8833
+lon=[197.92]
+lat=[5.8833]
 
 # longitude
 lon_flag = any(lon<0.)
@@ -80,9 +83,10 @@ lat_flag = any(lat>90.)
 for i in range(len(lat)):
     if (lat_flag):
         lat[i] = lat[i]-90.
-        
-# 2.2 Ensure that Sea-Surface Temperature is in degrees C, not Kelvin. 
 
+# 2.2 Ensure that Sea-Surface Temperature is in degrees C, not Kelvin.
+sst=ssta #AAA
+sss=sssa #AAA
 temp_flag = any(sst>200)
 
 for i in range(len(sst)):
@@ -90,22 +94,22 @@ for i in range(len(sst)):
         sst[i] = sst[i]-274.15
 
 #====================================================================
-# 3. CALL SENSOR MODEL: Call function 'pseudocoral' (see doc) to compute pseudocoral 
+# 3. CALL SENSOR MODEL: Call function 'pseudocoral' (see doc) to compute pseudocoral
 #    timeseries and spatial field.
 #====================================================================
 
-# NOTE: THIS SHOULD BE A 1-D VECTOR OF DATA! 
+# NOTE: THIS SHOULD BE A 1-D VECTOR OF DATA!
 
-coral = np.zeros((len(time))  # this will initialize a [Time x Lat x Lon] matrix of coral values.
+coral = np.zeros(len(time))  # this will initialize a [Time x Lat x Lon] matrix of coral values.
 
 # Fill coral array with data same size as input vectors.
 # Important: if you have d18O, add a 5th argument (remove -1).
 # Inputs: lat, lon, SST, SSS OR d18O
-# Optional d18O/T slope parameters: 
+# Optional d18O/T slope parameters:
 # a= -0.22,b1=0.3007062,b2=0.2619054,b3=0.436509,b4=0.1552032 (see doctring)
 
-for i in range (len(time)):
-	coral[i] = pseudocoral(lat,lon,sst[i],sss[i])
+for i in range(len(time)):
+    coral[i] = pseudocoral(lat,lon,sst[i],sss[i])
 
 #======================================================================
 # 4. CALL OBSERVATION MODEL
@@ -122,12 +126,12 @@ tp, Xp, tmc=bam_simul_perturb(X,t,param=[0.02,0.02],name='poisson',ns=1000,resiz
 sigma=0.1 # permil, measurement  precision
 coral_upper, coral_lower = analytical_err_simple(X,sigma)
 
-#4.2.2 Gaussian Noise Model for analytical error: 
+#4.2.2 Gaussian Noise Model for analytical error:
 sigma=0.1
-nsamples = ## enter number of samples here
+#nsamples = ## enter number of samples here
 coral_Xn=analytical_error(X,sigma)
 #====================================================================
-# Save coral timeseries fields as numpy arrays in current directory. 
+# Save coral timeseries fields as numpy arrays in current directory.
 
 coral=np.save("simulated_coral_d18O.npy",coral)
 coral_age_perturbed=np.save("coral_age_perturbed.npy",Xp)

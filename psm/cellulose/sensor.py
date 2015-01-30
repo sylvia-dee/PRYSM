@@ -1,4 +1,4 @@
-# Sylvia Dee 
+# Sylvia Dee
 # PSM d18O Cellulose
 # function 'cell_sensor'
 # Modified 07/02/2014 <sdee@usc.edu>
@@ -20,20 +20,20 @@ def cellulose_sensor(t,T,P,RH,d18Os,d18Op,d18Ov,flag=1.0,iso=True):
     d18Op   (Isotopes Ratio of Precipitation)
     d18Ov   (Isotope Ratio of Ambient Vapor at Surface Layer)
 
-    OUTPUT: 
+    OUTPUT:
 
     d18O(Cellulose) [permil]
 
     WORKING VARIABLES:
 
-    dlw       = d18O leaf water 
-    d18longts = d18O precip/soil water 
+    dlw       = d18O leaf water
+    d18longts = d18O precip/soil water
     dwvlongts = d18O vapor
     droden    = d18O tree cellulose
-    
+
     Notes: d18O values of leaf cellulose are 27 elevated above leaf water (Sternberg, 1989; Yakir and DeNiro, 1990)~ = ek
-    The mechanism for the 27 enrichment is the carbonyl\u2013water interaction during biosynthesis (Sternberg and DeNiro, 1983). 
-    Because the fractionation factor is the same for autotrophic and heterotrophic fractionation of oxygen, 
+    The mechanism for the 27 enrichment is the carbonyl\u2013water interaction during biosynthesis (Sternberg and DeNiro, 1983).
+    Because the fractionation factor is the same for autotrophic and heterotrophic fractionation of oxygen,
     there is no need to distinguish between the two.
 
     Two models are available: Roden, Evans
@@ -44,8 +44,9 @@ def cellulose_sensor(t,T,P,RH,d18Os,d18Op,d18Ov,flag=1.0,iso=True):
 #==============================================================
 # 1. Roden Model
 #==============================================================
+    import numpy as np
 
-    if flag == 0: 
+    if flag == 0:
 # 1.1 Define Constants
         ek = -27.
         ecell = 27.
@@ -95,30 +96,30 @@ def cellulose_sensor(t,T,P,RH,d18Os,d18Op,d18Ov,flag=1.0,iso=True):
         # Sensor Model
         #==============================================================
         # Option 1: Use Isotope-Enabled Model Output for dS, dV
-        if iso==True:   
+        if iso==True:
             o18sw = d18Os
             lt= c3+c4*ta       # leaf temperature
             tc=-c6*c5+273.15+ta
             alv=np.exp(1137.0/tc**2.0-0.4156/tc-0.00207)
             o18wva = d18Ov
         # Option 2: use Precipitation to calculate soil water, parameterize vapor:
-        else:                                                                                                            
+        else:
             o18sw = c1 + c2*pr    # soil water
             lt= c3+c4*ta       # leaf temperature
             tc=-c6*c5+273.15+ta
             alv=np.exp(1137.0/tc**2.0-0.4156/tc-0.00207)
             o18wva=1000*(1./alv-1)+o18sw
 
-            # Majoube, 1971 referenced in Gonfiantini et al., 2001: 
+            # Majoube, 1971 referenced in Gonfiantini et al., 2001:
             # equilibrium fraction between water liquid and vapor
             # o18wva = o18sw - 8
-                                                                                                                                       
+
         # Set Constants
-                                                                                                                                       
+
         rsmow=0.0020052     # 18/16 ratio for intl working std
         cw=55500.           # concentration of water (mol/m^3)
-        dw=0.00000000266    # diffusivity of H218O in water (m^2/s)                                                                                       
-        
+        dw=0.00000000266    # diffusivity of H218O in water (m^2/s)
+
         #Environmental Conditions
 
         svpa=(6.13753*np.exp(ta*((18.564-(ta/254.4)))/(ta+255.57))) # saturated vapour pressure of the air (mbar)
@@ -127,8 +128,8 @@ def cellulose_sensor(t,T,P,RH,d18Os,d18Op,d18Ov,flag=1.0,iso=True):
         rwv=((o18wva/1000.)+1.)*rsmow   # 18O/16O of water vapour
         do18wvs=((rwv/rsw)-1.)*1000.    # delta 18O of water vapour (per mil, wrt source water)
 
-        import scipy as SP    
-                                                                                                                                           
+        import scipy as SP
+
         # leaf evaporative conditions
         vpl=(6.13753*SP.exp(lt*((18.564-(lt/254.4)))/(lt+255.57))) # leaf internal vapour pressure (mbar)
         vpd=vpl-avpa # leaf - air saturation vapor pressure deficit (mbar)
@@ -149,15 +150,15 @@ def cellulose_sensor(t,T,P,RH,d18Os,d18Op,d18Ov,flag=1.0,iso=True):
         do18e=(((1.+(evpf/1000.))*(1.+(tdf/1000.)+(((do18wvs/1000.)-(tdf/1000.))*(avpa/vpl))))-1.)*1000. # Craig-Gordon evaporation-site water (D\18Oe) (per mil wrt source water )
         do18l=(do18e*(1.-(SP.exp(-pe))))/pe # Bulk leaf water (D18OL) (per mil wrt source water)
         do18s=do18l+efc # Sucrose D18O (per mil wrt source water)
-        do18c=do18l*(1.-(fwxm*feo))+efc # Cellulose D18O (per mil wrt source water)                                                                                                                    
-                                                                                                                                           
+        do18c=do18l*(1.-(fwxm*feo))+efc # Cellulose D18O (per mil wrt source water)
+
         #convert back into ratios wrt SMOW:
         M=1000.
         o18e=(((do18e/M+1.)*rsw)/rsmow-1.)*M
         o18l=(((do18l/M+1.)*rsw)/rsmow-1.)*M
         o18s=(((do18s/M+1.)*rsw)/rsmow-1.)*M
         o18c=(((do18c/M+1.)*rsw)/rsmow-1.)*M
-                                                                                                                                           
+
         # correct to observed o18 given observed mean (c7)
         # and fraction (c8) water from meteoric sources
         o18cc=o18c
