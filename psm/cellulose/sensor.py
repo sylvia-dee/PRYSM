@@ -162,7 +162,7 @@ def cellulose_sensor(t,T,P,RH,d18Os,d18Op,d18Ov,flag=1.0,iso=True):
         # correct to observed o18 given observed mean (c7)
         # and fraction (c8) water from meteoric sources
         o18cc=o18c
-        o18cc=c8*(o18c-(mean(o18c)-c7))+(1-c8)*c7
+        o18cc=c8*(o18c-(np.mean(o18c)-c7))+(1-c8)*c7
         dcell=o18cc
 
         return dcell

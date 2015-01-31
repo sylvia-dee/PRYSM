@@ -18,15 +18,12 @@ Temperature (K)
 #==============================================================
 # E0. Initialization
 #==============================================================
-#from __future__ import unicode_literals #unused AAA
 import numpy as np
 import matplotlib.pyplot as plt
-# fix the path before you can use those
-#import nitime.algorithms as tsa #unused AAA
-#import nitime.utils as utils #unused AAA
 import psm.aux_functions.butter_lowpass_filter as bwf
 from psm.speleo.sensor import *
-
+from psm.aux_functions.analytical_error import analytical_error
+from psm.aux_functions.analytical_err_simple import analytical_err_simple
 #==============================================================
 # E1. Load input data
 #==============================================================

@@ -26,12 +26,14 @@
 #======================================================================
 # E0. Initialization
 #======================================================================
-#from pydap.client import open_url
 from pylab import *
 import numpy as np
 import matplotlib.pyplot as plt
 from psm.icecore.sensor import icecore_sensor
-
+from psm.icecore.archive import icecore_diffuse
+from psm.agemodels.banded import bam_simul_perturb
+from psm.aux_functions.analytical_error import analytical_error
+from psm.aux_functions.analytical_err_simple import analytical_err_simple
 #======================================================================
 # E1. Load input data/all environmental variables (annual averages)
 #======================================================================
@@ -94,9 +96,10 @@ d18Oice  = icecore_sensor(time,d18O,alt_diff)
 #accum=accum*365.0       # multiple by 365 days to get yearly accumulation in mm
 #b = accum/1000.         # convert mm/yr to m/yr, accumulation rate (e.g. 1.3 m/year)
 
+b=accum
 core_length=np.cumsum(b)
 depth = core_length[-1]
-depth_horizons=np.diff(core_length)#enter depth horizons downcore
+#depth_horizons=np.diff(core_length)#enter depth horizons downcore
 
 # Set inputs for Archive Model
 
@@ -112,7 +115,7 @@ dz = min(depth_horizons)/10.#or 0.06# stepping in depth (m)
 drho = 0.5# step in density (kg/m^3)
 depth= depth# enter your ice core total depth/length in meters
 
-z, sigma, D, time_d, diffs, ice_diffused = icecore_diffuse(d18Oice,b,time,T,P,depth,depth_horizons, dz,drho)
+z, sig, D, time_d, diffs, ice_diffused = icecore_diffuse(d18Oice,b,time,T,P,depth,depth_horizons, dz,drho)
 
 #======================================================================
 # E5. CALL OBSERVATION MODEL
@@ -121,6 +124,8 @@ z, sigma, D, time_d, diffs, ice_diffused = icecore_diffuse(d18Oice,b,time,T,P,de
 # 5.1 Specify and model rate of annual layer miscount
 
 X = ice_diffused
+X = X.reshape(len(X),1)
+t = time
 tp, Xp, tmc=bam_simul_perturb(X,t,param=[0.01,0.01],name='poisson',ns=1000,resize=0)
 #======================================================================
 
@@ -145,9 +150,9 @@ diffs=diffs[0:-1]
 # row and column sharing
 f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
 ax1.plot(z[0:-1],D*1e4)
-ax2.plot(z[0:-2],sigma*100.0,color='c')
+ax2.plot(z[0:-2],sig*100.0,color='c')
 ax3.plot(z,time_d,color='r')
-ax4.plot(z[0:-2],sigma/diffs,color='g')
+ax4.plot(z[0:-2],sig/diffs,color='g')
 # Set common labels
 ax1.set_ylabel('diffusivity (cm^2/s)')
 ax1.set_xlabel('Depth(m)')
