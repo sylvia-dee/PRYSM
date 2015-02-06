@@ -46,13 +46,7 @@ def icecore_sensor(time,d18O,alt_diff=0.):
     alt_corr = (alt_diff/100.)*alt_eff
     ice = d18O + alt_corr
 #===================================================================
-# S2. Correct for Temperature Bias
-#===================================================================
-    t_eff  = 0.5
-    t_corr = (t_diff)*t_eff
-    ice = ice + t_corr
-#===================================================================
-# S3. Fill single array with ice core values:
+# S2. Fill single array with ice core values:
 #===================================================================
     #icecore = ice.reshape(len(t))
     return ice

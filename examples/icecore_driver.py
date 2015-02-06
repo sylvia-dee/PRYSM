@@ -26,11 +26,14 @@
 #======================================================================
 # E0. Initialization
 #======================================================================
-#from pydap.client import open_url
 from pylab import *
 import numpy as np
 import matplotlib.pyplot as plt
 from psm.icecore.sensor import icecore_sensor
+from psm.icecore.archive import icecore_diffuse
+from psm.agemodels.banded import bam_simul_perturb
+from psm.aux_functions.analytical_error import analytical_error
+from psm.aux_functions.analytical_err_simple import analytical_err_simple
 
 #======================================================================
 # E1. Load input data/all environmental variables (annual averages)
@@ -76,8 +79,8 @@ deltaP = d18Op#your precip isotope data would go here
 # 4. Apply icecore_sensor to extract precipitation-weighted d18o record for each core
 #    and compute altitude, temperature corrections. (Please see docstring icecore_sensor).
 
-d18O     = deltaP# your dataset loaded here
-alt_diff = 0.0      # alt_diff at location (m)
+d18O     = deltaP      # your dataset loaded here
+alt_diff = 3524.0      # alt_diff at location (m) (THIS IS FOR SPEEDY-QUELCCAYA)
 d18Oice  = icecore_sensor(time,d18O,alt_diff)
 
 # returns: icecore
@@ -94,9 +97,10 @@ d18Oice  = icecore_sensor(time,d18O,alt_diff)
 #accum=accum*365.0       # multiple by 365 days to get yearly accumulation in mm
 #b = accum/1000.         # convert mm/yr to m/yr, accumulation rate (e.g. 1.3 m/year)
 
+b=accum
 core_length=np.cumsum(b)
 depth = core_length[-1]
-depth_horizons=np.diff(core_length)#enter depth horizons downcore
+#depth_horizons=np.diff(core_length)#enter depth horizons downcore
 
 # Set inputs for Archive Model
 
@@ -112,7 +116,7 @@ dz = min(depth_horizons)/10.#or 0.06# stepping in depth (m)
 drho = 0.5# step in density (kg/m^3)
 depth= depth# enter your ice core total depth/length in meters
 
-z, sigma, D, time_d, diffs, ice_diffused = icecore_diffuse(d18Oice,b,time,T,P,depth,depth_horizons, dz,drho)
+z, sig, D, time_d, diffs, ice_diffused = icecore_diffuse(d18Oice,b,time,T,P,depth,depth_horizons, dz,drho)
 
 #======================================================================
 # E5. CALL OBSERVATION MODEL
@@ -121,6 +125,8 @@ z, sigma, D, time_d, diffs, ice_diffused = icecore_diffuse(d18Oice,b,time,T,P,de
 # 5.1 Specify and model rate of annual layer miscount
 
 X = ice_diffused
+X = X.reshape(len(X),1)
+t = time
 tp, Xp, tmc=bam_simul_perturb(X,t,param=[0.01,0.01],name='poisson',ns=1000,resize=0)
 #======================================================================
 
@@ -140,16 +146,20 @@ ice_Xn=analytical_error(X,sigma)
 
 # Example 1: Diffusion Profiles
 
+plt.rcParams['text.usetex']=True
+plt.rcParams['text.latex.unicode']=True
+plt.rcParams['font.family']='serif'
+
 diffs =((np.diff(z)/np.diff(time_d)))
 diffs=diffs[0:-1]
 # row and column sharing
 f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
 ax1.plot(z[0:-1],D*1e4)
-ax2.plot(z[0:-2],sigma*100.0,color='c')
+ax2.plot(z[0:-2],sig*100.0,color='c')
 ax3.plot(z,time_d,color='r')
-ax4.plot(z[0:-2],sigma/diffs,color='g')
+ax4.plot(z[0:-2],sig/diffs,color='g')
 # Set common labels
-ax1.set_ylabel('diffusivity (cm^2/s)')
+ax1.set_ylabel(r'diffusivity ($cm^2/s$)')
 ax1.set_xlabel('Depth(m)')
 ax2.set_ylabel('Diffusion length (cm)')
 ax2.set_xlabel('Depth(m)')
@@ -157,34 +167,35 @@ ax3.set_ylabel('Age (yrs)')
 ax3.set_xlabel('Depth (m)')
 ax4.set_ylabel('Diffusion Length/Annual Layer Thickness')
 ax4.set_xlabel('Depth (m)')
-plt.suptitle('VOSTOK Diffusion Lengths')
+plt.suptitle('Quelccaya Diffusion Lengths')
 plt.show()
 
 #======================================================================
 
 # Example 2: Plot age realizations with depth (THIS IS THE SAVED XP)
+# Change values to fit your data in plotting examples.
 
 bam=Xp
 bam.shape
 
 depths=depth_horizons
-depths=np.flipud(depths[:,0])
+depths=np.flipud(depths)
 
 quel=ice_diffused
 
 for i in range(len(bam[1])):
-    plt.plot(bam[:,i],depths,color='0.75')
+    plt.plot(depths,bam[:,i],color='0.75')
 
 plt.rcParams['text.usetex']=True
 plt.rcParams['text.latex.unicode']=True
 plt.rcParams['font.family']='serif'
 
-plt.plot(quel,depths,color='Blue')
+plt.plot(depths,quel,color='Blue')
 #plt.legend(loc=3,fontsize=14,frameon=False)
 #plt.xlim([1000,2010])
-#plt.ylim([-25,-10])
-plt.ylabel('Depth in Ice Core (m)')
-plt.xlabel('Modeled $\delta^{18}O_{ICE}$')
-plt.gca().invert_yaxis()
-plt.title(r'\texttt{BAM} Simulated Chronologies, 2$\%$ error, Quelccaya Ice Cap, Peru')
+plt.ylim([-12,-10.5])
+plt.xlabel(r'Depth in Ice Core (m)')
+plt.ylabel(r'Modeled $\delta^{18}O_{ICE}$')
+#plt.gca().invert_yaxis()
+plt.title(r'\texttt{BAM} Simulated Chronologies, 2$\%$ Symmetric Dating Errors, Quelccaya Ice Cap, Peru')
 plt.show()

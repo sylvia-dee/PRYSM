@@ -33,13 +33,13 @@ given a specified rate of miscount.
 #==============================================================
 
 # 0.0 Initialization
-
-#from pydap.client import open_url #Doesn't look like this is used AAA 
 from pylab import *
-
 import numpy as np
 import matplotlib.pyplot as plt
 import psm.cellulose.sensor as cs
+from psm.agemodels.banded import bam_simul_perturb
+from psm.aux_functions.analytical_error import analytical_error
+from psm.aux_functions.analytical_err_simple import analytical_err_simple
 #==============================================================
 # 1.0 Load Test Variables or your own data here:
 #==============================================================
@@ -49,6 +49,7 @@ datadir='test_data_cellulose/'
 
 # Soil Water Isotope Ratio [permil]
 d18Os=np.load(datadir+'d18O_soil.npy')
+d18Os=d18Os[:,1]
 
 # Precip [mm/day]
 P=np.load(datadir+'precipitation.npy')
@@ -59,6 +60,7 @@ RH=np.load(datadir+'relative_hum.npy')
 # Ambient Vapor Isotope Ratio d18Ov [permil]
 # NOTE: Take out the Lowest (surface) Level only.
 d18Ov=np.load(datadir+'d18O_vapor.npy')
+d18Ov=d18Ov[:,1]
 
 # Annual Average Surface Temperature
 T=np.load(datadir+'temperature.npy')
@@ -106,7 +108,7 @@ dcell = cs.cellulose_sensor(time,T,P,RH,d18Os,d18Op,d18Ov,flag=1.0,iso=True)
 #==============================================================
 # NOTE: PlACEHOLDER.
 
-dcell = cell_archive()
+#dcell = cell_archive()
 
 #==============================================================
 # 5. RUN OBSERVATION MODEL
@@ -119,7 +121,7 @@ dcell = cell_archive()
 
 X=dcell
 t=time
-
+X=X.reshape(len(X),1)
 tp, Xp, tmc = bam_simul_perturb(X,t,param=[0.05,0.05],name='poisson',ns=1000,resize=0)
 #==============================================================
 

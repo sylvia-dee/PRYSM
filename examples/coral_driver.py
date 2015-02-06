@@ -22,18 +22,14 @@ Please read docstring carefully for each function call before use.
 # 0. Initialization
 #====================================================================
 
-#from pydap.client import open_url #Unused AAA
 from pylab import *
 from psm.coral.sensor import pseudocoral
-
-#import sys, os, cdtime, cdutil, cdms2, vcs, MV2, time, datetime
+from psm.agemodels.banded import bam_simul_perturb
+from psm.aux_functions.analytical_error import analytical_error
+from psm.aux_functions.analytical_err_simple import analytical_err_simple
 import numpy as np
 import matplotlib.pyplot as plt
-
-#from regrid2 import Regridder #Unused AAA
-#from vcsaddons import EzTemplate #Unused AAA
 import scipy.io
-#import Scientific.IO.NetCDF as S #Unused AAA
 
 #====================================================================
 # 1. LOAD CLIMATE FIELDS
@@ -118,6 +114,7 @@ for i in range(len(time)):
 # 4.1 Specify and model rate of annual layer miscount: BAM (see doctring)
 
 X = coral
+X = X.reshape(len(X),1)
 tp, Xp, tmc=bam_simul_perturb(X,t,param=[0.02,0.02],name='poisson',ns=1000,resize=0)
 #======================================================================
 # 4.2: Analytical Uncertainty Model:

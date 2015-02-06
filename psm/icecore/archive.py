@@ -43,6 +43,7 @@ def diffusivity(rho,T=250,P=0.7,rho_d=822,b=0.25):
     p=np.exp(9.5504+3.53*np.log(T)-5723.265/T-0.0073*T)     # saturation vapor pressure
     Po = 1.                                                 # reference pressure, atmospheres
     ppa=3.454e12*np.exp(-6133/T)
+    rho_i = 920.# kg/m^3, density of solid ice
     
     # Set diffusivity in air (units of m^2/s)
     
@@ -121,7 +122,7 @@ def icecore_diffuse(d18O,b,time,T,P,depth,depth_horizons,dz,drho):
 
 # Set Density Profile
     z = np.arange(0,depth,dz)+dz# linear depth scale
-    rho = np.arange(rho_s,rho_d,len(z))
+    rho = np.linspace(rho_s,rho_d,len(z))
     rho = rho[0:len(z)]
     time_d = np.cumsum(dz/b*rho/rho_i)# timescale accounting for densification
     ts = time_d*365.25*24*3600# convert time in years to ts in seconds
@@ -133,6 +134,8 @@ def icecore_diffuse(d18O,b,time,T,P,depth,depth_horizons,dz,drho):
     D=diffusivity(rho,T,P,rho_d,b)
     D=D[0:-1]
     rho = rho[0:-1]
+    diffs =((np.diff(z)/np.diff(time_d)))
+    diffs=diffs[0:-1]
 
     # Integration using the trapezoidal method
 
@@ -147,7 +150,7 @@ def icecore_diffuse(d18O,b,time,T,P,depth,depth_horizons,dz,drho):
 
     # Load water isotope series
 
-    del18 = np.flipud(d18o)# NOTE YOU MIGHT NOT NEED FLIP UD here. Our data goes forward in time.
+    del18 = np.flipud(d18O)# NOTE YOU MIGHT NOT NEED FLIP UD here. Our data goes forward in time.
     depth_horizons = depth_horizons
 
     # interpolate over depths to get an array of dz values corresponding to isotope values

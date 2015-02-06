@@ -18,14 +18,19 @@ Temperature (K)
 #==============================================================
 # E0. Initialization
 #==============================================================
-#from __future__ import unicode_literals #unused AAA
 import numpy as np
 import matplotlib.pyplot as plt
-# fix the path before you can use those
-#import nitime.algorithms as tsa #unused AAA
-#import nitime.utils as utils #unused AAA
 import psm.aux_functions.butter_lowpass_filter as bwf
 from psm.speleo.sensor import *
+from psm.aux_functions.analytical_error import analytical_error
+from psm.aux_functions.analytical_err_simple import analytical_err_simple
+from psm.agemodels.tiepoint import chron
+
+from matplotlib import rc
+rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+## for Palatino and other serif fonts use:
+#rc('font',**{'family':'serif','serif':['Palatino']})
+rc('text', usetex=True)
 
 #==============================================================
 # E1. Load input data
@@ -38,7 +43,7 @@ datadir='test_data_speleo/'
 cave_data = {}
 cave_data['dO18_prcp'] = np.load(datadir+'B_PISO.npy')
 cave_data['dO18_soil'] = np.load(datadir+'B_SISO.npy')
-cave_data['temp']      = np.load(datadir+'B_T.npy')
+cave_data['temp']      = np.load(datadir+'B_TEMP.npy')
 cave_data['prcp']      = np.load(datadir+'B_PRCP.npy')
 
 # define time axis
@@ -78,14 +83,12 @@ K4     = bwf.filter(d18O_ad2,fc)
 #==========================================================================
 # E3. APPLY OBSERVATION MODEL
 #==========================================================================
-import analytical_error as err
-import psm_obs_tiepoint as chron
+
 from rpy2.robjects import FloatVector
 from rpy2.robjects.vectors import StrVector
 import rpy2.robjects as robjects
 import scipy.interpolate as si
 from rpy2.robjects.packages import importr
-from wwz import *
 
 r = robjects.r
 
