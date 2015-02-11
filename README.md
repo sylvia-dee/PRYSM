@@ -1,7 +1,7 @@
 =======
-PyPSM
+PRYSM
 =====
-Climate Proxy System Models in Python
+climate PRoxY System Models in python
 
 Introduction
 ---------------------------
