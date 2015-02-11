@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # This is a driver script for the Proxy System Model
 # of the d18O of  Speleothem Calcite
 # Created 10/28/2014 by Julien Emile-Geay (julieneg@usc.edu)

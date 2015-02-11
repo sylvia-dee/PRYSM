@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Sylvia Dee
 # PSM d18O Ice Cores
 # ENVIRONMENT SUB-MODEL
