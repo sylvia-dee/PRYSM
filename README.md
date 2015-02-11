@@ -15,7 +15,7 @@ scipy (http://www.scipy.org/)
 
 rpy2 (http://rpy.sourceforge.net/) (For BCHRON)
 
-Optional
+Optional:
   matplotlib (http://matplotlib.org/) (For plotting tools)
 
 Installation
