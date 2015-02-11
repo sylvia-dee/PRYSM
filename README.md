@@ -10,7 +10,9 @@ This python package does a bunch of cool stuff with climate proxies.
 Dependencies
 ---------------------------
 numpy (http://www.numpy.org/) 
+
 scipy (http://www.scipy.org/) 
+
 rpy2 (http://rpy.sourceforge.net/) (For BCHRON)
 
 Optional
