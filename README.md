@@ -1,12 +1,25 @@
 =======
 PRYSM
 =====
-climate PRoxY System Models in python
+open-source tools for PRoxY System Modeling, v1.0: oxygen-isotope systems
 
 Introduction
 ---------------------------
-This python package does a bunch of cool stuff with climate proxies.
-
+Proxy system modeling can be used in paleoclimatology to improve the interpretation of 
+paleoclimate data. Existing forward models for climate proxies are somewhat scattered in 
+the literature, making their integration difficult. Further, each model has been coded 
+separately, according to disparate conventions. Here, we present a comprehensive, consistently 
+formatted package of forward models for water-isotope based climate proxies (ice cores, corals, 
+tree ring cellulose, and speleothem calcite) [PRYSM]. This suite of Python-scripted models requires
+a standard set of climate inputs and can be used to simulate the proxy variable of interest by proxy class. 
+By making this forward modeling toolbox publicly available, PRYSM provides an accessible platform that maximizes
+the utility of proxy data and facilitates proxy-climate (simulated or historical) comparisons. Many of these codes 
+have been employed in past studies; we review modeling approaches for each proxy class, and compare 
+results when forced with an isotope-enabled climate simulation. Applications of multi-proxy forward 
+modeling including parameter estimation, the effects of physical processes (such as karst transit times 
+or firn diffusion in ice cores) on the simulated climate signal, as well as explicit modeling of 
+time uncertainties are used to demonstrate the utility of PRYSM for a broad array of climate studies. 
+  
 Dependencies
 ---------------------------
 numpy (http://www.numpy.org/)  
