@@ -19,7 +19,9 @@ results when forced with an isotope-enabled climate simulation. Applications of 
 modeling including parameter estimation, the effects of physical processes (such as karst transit times 
 or firn diffusion in ice cores) on the simulated climate signal, as well as explicit modeling of 
 time uncertainties are used to demonstrate the utility of PRYSM for a broad array of climate studies. 
-  
+
+![Icecore Proxy System Model](examples/images/PSM_icecore_ex.png)
+
 Dependencies
 ---------------------------
 numpy (http://www.numpy.org/)  
@@ -28,6 +30,8 @@ rpy2 (http://rpy.sourceforge.net/) (For BCHRON)
 
 Optional:
   matplotlib (http://matplotlib.org/) (For plotting tools)
+  
+![Age Uncertainties](examples/images/age_uncertainties.png)
 
 Installation
 ---------------------------
