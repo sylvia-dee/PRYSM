@@ -8,6 +8,6 @@ setup(name='psm',
           'psm.speleo',
           'psm.icecore',
           'psm.aux_functions'],
-      author='Sylvia Dee',
+      author='Sylvia Dee and Amir Allam',
       url=''
       )
