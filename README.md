@@ -48,7 +48,7 @@ If you lack root access:
 
 Testing
 ---------------------------
-From the examples/ directory, run each of the example driver scripts:  
+From the examples/ directory, run each of the example driver scripts and each of the plotting examples. For just the icecore example:  
 python icecore_driver.py  
 
 This will create numpy array output files in examples/results/:  
