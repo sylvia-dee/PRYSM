@@ -53,6 +53,9 @@ python icecore_driver.py
 
 This will create numpy array output files in examples/results/:  
 ice_Xn.npy
+ice_time_d.npy
+ice_depth.npy
+ice_diffused.npy
 
 To plot (requires matplotlib):  
 python plot_icecore_example.py
