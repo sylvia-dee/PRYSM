@@ -27,9 +27,7 @@
 #======================================================================
 # E0. Initialization
 #======================================================================
-from pylab import *
 import numpy as np
-import matplotlib.pyplot as plt
 from psm.icecore.sensor import icecore_sensor
 from psm.icecore.archive import icecore_diffuse
 from psm.agemodels.banded import bam_simul_perturb
@@ -42,7 +40,7 @@ from psm.aux_functions.analytical_err_simple import analytical_err_simple
 
 # LOAD TESTER FILES (OPTIONAL) or input your own data here.
 datadir='test_data_icecore/'
-
+print 'Loading data from ',datadir
 # Near-Surface Air Temp [K]
 T=np.load(datadir+'temperature.npy')
 
@@ -76,7 +74,7 @@ deltaP = d18Op#your precip isotope data would go here
 #======================================================================
 # E3. CALL SENSOR MODEL
 #======================================================================
-
+print 'Running sensor model...'
 # 4. Apply icecore_sensor to extract precipitation-weighted d18o record for each core
 #    and compute altitude, temperature corrections. (Please see docstring icecore_sensor).
 
@@ -89,7 +87,7 @@ d18Oice  = icecore_sensor(time,d18O,alt_diff)
 #======================================================================
 # E4. CALL ARCHIVE MODEL
 #======================================================================
-
+print 'Running archive model...'
 # This archive model will calculate diffusion and compaction
 # (Please see docstrings: diffusivity, icecore_diffuse)
 
@@ -122,7 +120,7 @@ z, sig, D, time_d, diffs, ice_diffused = icecore_diffuse(d18Oice,b,time,T,P,dept
 #======================================================================
 # E5. CALL OBSERVATION MODEL
 #======================================================================
-
+print 'Running observation model...'
 # 5.1 Specify and model rate of annual layer miscount
 
 X = ice_diffused
@@ -132,7 +130,7 @@ tp, Xp, tmc=bam_simul_perturb(X,t,param=[0.01,0.01],name='poisson',ns=1000,resiz
 #======================================================================
 
 # 5.2: Analytical Uncertainty Model:
-
+print 'Adding uncertainty...'
 #5.2.1 Simple Model: just add uncertainty bands based on measurement precision
 sigma=0.1 # permil, measurement  precision
 ice_upper, ice_lower = analytical_err_simple(X,sigma)
@@ -141,62 +139,72 @@ ice_upper, ice_lower = analytical_err_simple(X,sigma)
 sigma=0.1
 #nsamples = ## enter number of samples here
 ice_Xn=analytical_error(X,sigma)
+
+#====================================================================
+# Save whatever needs to be saved
+print 'Saving data...'
+outdir='./results/'
+np.save(outdir+"ice_Xn.npy",ice_Xn)
+#Whatever else...
+#====================================================================
+
+###Move to separate plotting script
 #======================================================================
 # PLOTTING EXAMPLES
 #======================================================================
 
 # Example 1: Diffusion Profiles
 
-plt.rcParams['text.usetex']=True
-plt.rcParams['text.latex.unicode']=True
-plt.rcParams['font.family']='serif'
+# plt.rcParams['text.usetex']=True
+# plt.rcParams['text.latex.unicode']=True
+# plt.rcParams['font.family']='serif'
 
-diffs =((np.diff(z)/np.diff(time_d)))
-diffs=diffs[0:-1]
-# row and column sharing
-f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
-ax1.plot(z[0:-1],D*1e4)
-ax2.plot(z[0:-2],sig*100.0,color='c')
-ax3.plot(z,time_d,color='r')
-ax4.plot(z[0:-2],sig/diffs,color='g')
-# Set common labels
-ax1.set_ylabel(r'diffusivity ($cm^2/s$)')
-ax1.set_xlabel('Depth(m)')
-ax2.set_ylabel('Diffusion length (cm)')
-ax2.set_xlabel('Depth(m)')
-ax3.set_ylabel('Age (yrs)')
-ax3.set_xlabel('Depth (m)')
-ax4.set_ylabel('Diffusion Length/Annual Layer Thickness')
-ax4.set_xlabel('Depth (m)')
-plt.suptitle('Quelccaya Diffusion Lengths')
-plt.show()
+# diffs =((np.diff(z)/np.diff(time_d)))
+# diffs=diffs[0:-1]
+# # row and column sharing
+# f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
+# ax1.plot(z[0:-1],D*1e4)
+# ax2.plot(z[0:-2],sig*100.0,color='c')
+# ax3.plot(z,time_d,color='r')
+# ax4.plot(z[0:-2],sig/diffs,color='g')
+# # Set common labels
+# ax1.set_ylabel(r'diffusivity ($cm^2/s$)')
+# ax1.set_xlabel('Depth(m)')
+# ax2.set_ylabel('Diffusion length (cm)')
+# ax2.set_xlabel('Depth(m)')
+# ax3.set_ylabel('Age (yrs)')
+# ax3.set_xlabel('Depth (m)')
+# ax4.set_ylabel('Diffusion Length/Annual Layer Thickness')
+# ax4.set_xlabel('Depth (m)')
+# plt.suptitle('Quelccaya Diffusion Lengths')
+# plt.show()
 
-#======================================================================
+# #======================================================================
 
-# Example 2: Plot age realizations with depth (THIS IS THE SAVED XP)
-# Change values to fit your data in plotting examples.
+# # Example 2: Plot age realizations with depth (THIS IS THE SAVED XP)
+# # Change values to fit your data in plotting examples.
 
-bam=Xp
-bam.shape
+# bam=Xp
+# bam.shape
 
-depths=depth_horizons
-depths=np.flipud(depths)
+# depths=depth_horizons
+# depths=np.flipud(depths)
 
-quel=ice_diffused
+# quel=ice_diffused
 
-for i in range(len(bam[1])):
-    plt.plot(depths,bam[:,i],color='0.75')
+# for i in range(len(bam[1])):
+#     plt.plot(depths,bam[:,i],color='0.75')
 
-plt.rcParams['text.usetex']=True
-plt.rcParams['text.latex.unicode']=True
-plt.rcParams['font.family']='serif'
+# plt.rcParams['text.usetex']=True
+# plt.rcParams['text.latex.unicode']=True
+# plt.rcParams['font.family']='serif'
 
-plt.plot(depths,quel,color='Blue')
-#plt.legend(loc=3,fontsize=14,frameon=False)
-#plt.xlim([1000,2010])
-plt.ylim([-12,-10.5])
-plt.xlabel(r'Depth in Ice Core (m)')
-plt.ylabel(r'Modeled $\delta^{18}O_{ICE}$')
-#plt.gca().invert_yaxis()
-plt.title(r'\texttt{BAM} Simulated Chronologies, 2$\%$ Symmetric Dating Errors, Quelccaya Ice Cap, Peru')
-plt.show()
+# plt.plot(depths,quel,color='Blue')
+# #plt.legend(loc=3,fontsize=14,frameon=False)
+# #plt.xlim([1000,2010])
+# plt.ylim([-12,-10.5])
+# plt.xlabel(r'Depth in Ice Core (m)')
+# plt.ylabel(r'Modeled $\delta^{18}O_{ICE}$')
+# #plt.gca().invert_yaxis()
+# plt.title(r'\texttt{BAM} Simulated Chronologies, 2$\%$ Symmetric Dating Errors, Quelccaya Ice Cap, Peru')
+# plt.show()

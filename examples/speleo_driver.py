@@ -22,12 +22,17 @@ Temperature (K)
 import numpy as np
 import matplotlib.pyplot as plt
 import psm.aux_functions.butter_lowpass_filter as bwf
-from psm.speleo.sensor import *
+#import scipy.interpolate as si
+from psm.speleo.sensor import * #We should probably be explicit
 from psm.aux_functions.analytical_error import analytical_error
 from psm.aux_functions.analytical_err_simple import analytical_err_simple
 from psm.agemodels.tiepoint import chron
+#R things. It would be nice to get rid of this dependency
+import rpy2.robjects as robjects
+from rpy2.robjects import FloatVector
+from rpy2.robjects.vectors import StrVector
+from rpy2.robjects.packages import importr
 
-from matplotlib import rc
 rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 ## for Palatino and other serif fonts use:
 #rc('font',**{'family':'serif','serif':['Palatino']})
@@ -36,7 +41,7 @@ rc('text', usetex=True)
 #==============================================================
 # E1. Load input data
 #==============================================================
-
+print 'Loading data...'
 # Note: for the tester files, the data corresponds to Borneo
 # output is from SPEEDY-IER
 # USER should please load your own data here!
@@ -53,6 +58,7 @@ t=np.arange(1000,2005,1.0)
 #==========================================================================
 # E2. APPLY SENSOR MODEL
 #==========================================================================
+print 'Running sensor model...'
 model = 'Adv-Disp'
 Pe   = 1.0  # Peclet number
 tau0 = 1.0  # mean aquifer transit time
@@ -84,12 +90,7 @@ K4     = bwf.filter(d18O_ad2,fc)
 #==========================================================================
 # E3. APPLY OBSERVATION MODEL
 #==========================================================================
-
-from rpy2.robjects import FloatVector
-from rpy2.robjects.vectors import StrVector
-import rpy2.robjects as robjects
-import scipy.interpolate as si
-from rpy2.robjects.packages import importr
+print 'Running observation model...'
 
 r = robjects.r
 
@@ -119,7 +120,7 @@ chronCE = np.fliplr(1950 - chronBP)
 #==========================================================================
 
 # 3.2: Analytical Uncertainty Model:
-
+print 'Adding uncertainty...'
 #Enter final simulated speleothem record (choose from above options)
 X=d18O_wm1
 #X=d18O_wm2
@@ -132,10 +133,16 @@ speleo_upper, speleo_lower = analytical_err_simple(X,sigma)
 sigma=0.1
 #nsamples = ## enter number of samples here
 speleo_Xn=analytical_error(X,sigma)
-#==========================================================================
-#  plot it all away
-#==========================================================================
 
+#====================================================================
+# Save whatever needs to be saved
+print 'Saving data...'
+outdir='./results/'
+np.save(outdir+"speleo_Xn.npy",speleo_Xn)
+#Whatever else...
+#====================================================================
+
+###Move this to a separate plotting script ###
 #f, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
 #f.set_figheight(12); f.set_figwidth(8)
 #plt.rcParams['text.usetex']=True

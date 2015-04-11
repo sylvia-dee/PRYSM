@@ -34,9 +34,7 @@ given a specified rate of miscount.
 #==============================================================
 
 # 0.0 Initialization
-from pylab import *
 import numpy as np
-import matplotlib.pyplot as plt
 import psm.cellulose.sensor as cs
 from psm.agemodels.banded import bam_simul_perturb
 from psm.aux_functions.analytical_error import analytical_error
@@ -47,6 +45,7 @@ from psm.aux_functions.analytical_err_simple import analytical_err_simple
 
 # Example data directory
 datadir='test_data_cellulose/'
+print 'Loading data from ', datadir,' ...'
 
 # Soil Water Isotope Ratio [permil]
 d18Os=np.load(datadir+'d18O_soil.npy')
@@ -101,7 +100,7 @@ time = np.arange(1000,2005,1)
 # UNITS: T[K], P[MM/DAY], RH [%], isotope fields [permil]
 # KWARGS:   [flag = 1 for Evans Model, 0 for Roden Model]
 #           [iso=true to use isotope fields, false to use T, P fields]
-
+print 'Running sensor model...'
 dcell = cs.cellulose_sensor(time,T,P,RH,d18Os,d18Op,d18Ov,flag=1.0,iso=True)
 
 #==============================================================
@@ -119,7 +118,7 @@ dcell = cs.cellulose_sensor(time,T,P,RH,d18Os,d18Op,d18Ov,flag=1.0,iso=True)
 # age-uncertain records and account for analytical uncertainty.
 
 # 5.1: Ring Miscount Uncertainty Model:
-
+print 'Running observation model...'
 X=dcell
 t=time
 X=X.reshape(len(X),1)
@@ -127,7 +126,7 @@ tp, Xp, tmc = bam_simul_perturb(X,t,param=[0.05,0.05],name='poisson',ns=1000,res
 #==============================================================
 
 # 5.2: Analytical Uncertainty Model:
-
+print 'Adding uncertainty...'
 #5.2.1 Simple Model: just add uncertainty bands based on measurement precision
 sigma=0.1 # permil, measurement  precision
 dcell_upper, dcell_lower = analytical_err_simple(X,sigma)
@@ -136,4 +135,10 @@ dcell_upper, dcell_lower = analytical_err_simple(X,sigma)
 sigma=0.1
 #nsamples = ## enter number of samples here
 dcell_Xn=analytical_error(X,sigma)
-#==============================================================
+#====================================================================
+# Save whatever needs to be saved
+print 'Saving data...'
+outdir='./results/'
+np.save(outdir+"dcell_Xn.npy",dcell_Xn)
+#Whatever else...
+#====================================================================
