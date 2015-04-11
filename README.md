@@ -49,14 +49,11 @@ If you lack root access:
 Testing
 ---------------------------
 From the examples/ directory, run each of the example driver scripts:  
-./cellulose_driver.py  
-./speleo_driver.py  
-./icecore_driver.py  
-./coral_driver.py  
+python icecore_driver.py  
 
-This will create output files:  
-XXXXX
+This will create numpy array output files in examples/results/:  
+ice_Xn.npy
 
 To plot (requires matplotlib):  
-XXXXX
+python plot_icecore_example.py
 
