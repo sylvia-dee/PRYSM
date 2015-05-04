@@ -45,6 +45,10 @@ Either method will add a module named 'psm' to your default lib/python2.7/site-p
 
 If you lack root access:  
  python setup.py install --user
+ 
+For git users:
+ git clone https://github.com/sylvia-dee/PRYSM.git
+ python setup.py install
 
 Testing
 ---------------------------
