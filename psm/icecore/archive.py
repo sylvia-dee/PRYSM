@@ -184,6 +184,8 @@ def icecore_diffuse(d18O,b,time,T,P,depth,depth_horizons,dz,drho):
 # Now we need to pack our data back into single year data units based on the depths and year interpolated data
     final_iso=np.interp(depth_horizons,z[0:-3],diffused_timeseries)
     ice_diffused=final_iso
+# Reverse the time axis back to increasing with time rather than depth
+    ice diffused=np.flipud(ice_diffused)
 # ====================================================================== 
     return z, sigma, D, time_d, diffs, ice_diffused
 
