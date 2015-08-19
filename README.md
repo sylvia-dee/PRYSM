@@ -5,7 +5,7 @@ open-source tools for PRoxY System Modeling, v1.0: oxygen-isotope systems
 
 Introduction
 ---------------------------
-The paper, published in JAMES: http://www.google.com/url?q=http%3A%2F%2Fonlinelibrary.wiley.com%2Fdoi%2F10.1002%2F2015MS000447%2Ffull&sa=D&sntz=1&usg=AFQjCNEvDj8lZnVyBt1Z_0aeIhsruxXI9Q
+The paper, published in JAMES: http://onlinelibrary.wiley.com/doi/10.1002/2015MS000447/full
 
 Proxy system modeling can be used in paleoclimatology to improve the interpretation of 
 paleoclimate data. Existing forward models for climate proxies are somewhat scattered in 
