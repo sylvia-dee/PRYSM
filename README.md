@@ -67,5 +67,3 @@ To plot (requires matplotlib):
 python plot_icecore_example.py
 
 This will reproduce paper figure 3.
-
-under construction...
