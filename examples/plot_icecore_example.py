@@ -29,7 +29,7 @@ ax4.plot(z[0:-2],sig/diffs,color='g')
 # Set common labels
 ax1.set_ylabel(r'diffusivity ($cm^2/s$)')
 ax1.set_xlabel('Depth(m)')
-ax2.set_ylabel('Diffusion length (cm)')a
+ax2.set_ylabel('Diffusion length (cm)')
 ax2.set_xlabel('Depth(m)')
 ax3.set_ylabel('Age (yrs)')
 ax3.set_xlabel('Depth (m)')
