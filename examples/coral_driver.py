@@ -93,7 +93,7 @@ print 'Running sensor model...'
 coral = np.zeros(len(time))  # this will initialize a [Time x Lat x Lon] matrix of coral values.
 
 # Fill coral array with data same size as input vectors.
-# Important: if you have d18O, add a 5th argument (remove -1).
+# Important: if you have d18O of seawater, add a 5th argument 'd18O' and input data as vector array (default is -1).
 # Inputs: lat, lon, SST, SSS OR d18O
 # Optional d18O/T slope parameters:
 # a= -0.22,b1=0.3007062,b2=0.2619054,b3=0.436509,b4=0.1552032 (see doctring)
