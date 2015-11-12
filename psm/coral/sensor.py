@@ -5,7 +5,7 @@
 # Modified 10_16_2013 <sdee@usc.edu>
 #====================================================================
 
-def pseudocoral(lat,lon,SST,SSS,d180=-1,a= -0.22,b1=0.3007062,b2=0.2619054,b3=0.436509,b4=0.1552032):
+def pseudocoral(lat,lon,SST,SSS,d18O=-1,a= -0.22,b1=0.3007062,b2=0.2619054,b3=0.436509,b4=0.1552032):
 
     """
         DOCSTRING: Function 'pseudocoral' produces a d18O-coral record given SST, SSS, and global position.
@@ -83,7 +83,7 @@ def pseudocoral(lat,lon,SST,SSS,d180=-1,a= -0.22,b1=0.3007062,b2=0.2619054,b3=0.
 
 # Form an array of pseudocoral data
 
-    if d180==-1:
+    if d18O==-1:
         coral = a*SST+b*SSS
     else:
         coral = a*SST + d18O
