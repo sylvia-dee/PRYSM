@@ -68,11 +68,11 @@ lat=5.8833
 # make sure there are no negative-longitude coordinates: [0 to 360] only.
 # longitude
 if (lon<0.):
-	lon = lon+360.
+    lon = lon+360.
 
 # latitude
 if (lat>90.):
-	lat = lat-90.
+    lat = lat-90.
 
 # 2.2 Ensure that Sea-Surface Temperature is in degrees C, not Kelvin.
 sst=ssta #AAA
