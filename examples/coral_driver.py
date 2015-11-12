@@ -62,22 +62,17 @@ print 'Preparing data...'
 # lat: convert (0: 180) to (-90: +90)
 
 # Enter your coordinates here:
+lon=197.92
+lat=5.8833
 
-lon=[197.92]
-lat=[5.8833]
-
+# make sure there are no negative-longitude coordinates: [0 to 360] only.
 # longitude
-lon_flag = any(lon<0.)
-for i in range(len(lon)):
-    if (lon_flag):
-        lon[i] = lon[i]+180.
+if (lon<0.):
+	lon = lon+360.
 
 # latitude
-
-lat_flag = any(lat>90.)
-for i in range(len(lat)):
-    if (lat_flag):
-        lat[i] = lat[i]-90.
+if (lat>90.):
+	lat = lat-90.
 
 # 2.2 Ensure that Sea-Surface Temperature is in degrees C, not Kelvin.
 sst=ssta #AAA
