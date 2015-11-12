@@ -166,7 +166,17 @@ def icecore_diffuse(d18O,b,time,T,P,depth,depth_horizons,dz,drho):
 # Do the entire calculation on the isotope time series
 
     zp=np.arange(-5,5,dz)
-
+    # SDEE: change 11/11/15, length of zp causes issues for low accumulation sites. Added fix below. 
+    # split zp in half, take the -start part of the first half, and then the -stop part of the second half.
+    zp1,zp2=np.array_split(zp,2)
+    ind=len(z)*0.25
+    
+    if (len(zp) > len(z)):
+        zp1=zp1[-ind:-1]
+        zp2=zp2[0:ind]
+        
+    zp=np.concatenate((zp1,zp2))
+    
     for i in range(len(sigma)):
         part1=(1./(sigma[i]*np.sqrt(2.*np.pi)))
         part2=scipy.exp(-zp**2/(2*sigma[i]**2))
