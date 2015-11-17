@@ -70,10 +70,10 @@ T     = np.array(cave_data['temp'])
 P     = np.array(cave_data['prcp'])
 
 #  Apply two different catchment models with Tau = 1.0 years, 5.0 years
-d18O_wm1, d18O_wmK1, hwm1 = speleo_sensor(t,d18Os,T,'Well-Mixed',1.0)
-d18O_ad1, d18O_adK1, had1 = speleo_sensor(t,d18Os,T,'Adv-Disp',1.0,Pe)
-d18O_wm2, d18O_wmK2, hwm2 = speleo_sensor(t,d18Os,T,'Well-Mixed',5.0)
-d18O_ad2, d18O_adK2, had2 = speleo_sensor(t,d18Os,T,'Adv-Disp',5.0,Pe)
+d18O_wm1, d18O_wmK1, hwm1 = speleo_sensor(dt,d18Os,T,'Well-Mixed',1.0)
+d18O_ad1, d18O_adK1, had1 = speleo_sensor(dt,d18Os,T,'Adv-Disp',1.0,Pe)
+d18O_wm2, d18O_wmK2, hwm2 = speleo_sensor(dt,d18Os,T,'Well-Mixed',5.0)
+d18O_ad2, d18O_adK2, had2 = speleo_sensor(dt,d18Os,T,'Adv-Disp',5.0,Pe)
 
 # Save a Zipped output file (optional)
 # >np.savez('cave_dataCave_speleothem_example',cave_data, d18O_c1, d18O_K1,d18O_c2, d18O_K2)
