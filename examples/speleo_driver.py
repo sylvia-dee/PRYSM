@@ -52,9 +52,11 @@ cave_data['dO18_soil'] = np.load(datadir+'B_SISO.npy')
 cave_data['temp']      = np.load(datadir+'B_TEMP.npy')
 cave_data['prcp']      = np.load(datadir+'B_PRCP.npy')
 
-# define time axis
+# define time axis, and the time stepping parameter dt
 t=np.arange(1000,2005,1.0)
-
+# define time step in years. for annual data, dt = 1.0. for monthly data, dt=1./12.
+dt=1.0
+#dt=1./12.
 #==========================================================================
 # E2. APPLY SENSOR MODEL
 #==========================================================================
