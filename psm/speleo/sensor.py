@@ -19,14 +19,14 @@ def adv_disp_transit(tau,tau0,Pe):
     return h
 
 #  this is the sensor model
-def speleo_sensor(t,d18O,T,model='Adv-Disp',tau0=0.5,Pe=1.0):
+def speleo_sensor(dt,d18O,T,model='Adv-Disp',tau0=0.5,Pe=1.0):
     '''
     Speleothem Calcite [Sensor] Model
     Converts environmental signals to d18O calcite/dripwater using
     various models of karst aquifer recharge and calcification.
 
     INPUTS:
-        t        time axis [years]                          (numpy array, length n)
+        dt        time step [years]                         (int or float, 1=1 year, 1./12. for months. etc.)
         T        Average Annual Temperature     [K]         (numpy array, length n)
         d18O    delta-18-O (precip or soil water) [permil]  (numpy array, length n)
         NB: make sure these are precipitation weighted
@@ -51,7 +51,29 @@ def speleo_sensor(t,d18O,T,model='Adv-Disp',tau0=0.5,Pe=1.0):
     #======================================================================
     # 1. Karst Model
     #======================================================================
-    tau = np.arange(20*tau0)
+    # ensure that tau0 is scaled correctly 
+    # (n.b. if in units of months, scale to years, *1/12)
+
+    tau0=tau0*dt
+
+	# Check to make sure mean residence time does not exceed 0.5 x [time series length]
+	# It makes little sense to compute mixing with a long residence time with an extremely short timeseries.  
+
+    timeseries_len=len(d18O)*dt
+    if (tau0>=(0.5*timeseries_len)):
+        print "Warning: mean residence time (tau0) is too close to half of the length of the timeseries."
+
+	# establish kernel length for transit time distribution
+	# tau=np.arange(20.*tau0) {SDEE: revised 11/17/15}
+
+    h_s=1E-4						# ensure kernel approaches 0
+    tau_s=-tau0*np.log(tau0*h_s)
+    tau=np.arange(tau_s)
+
+	# np.convolve method will not function correctly if the length of the kernel approaches that of the series. 
+
+    if (len(tau)>=(0.5*timeseries_len)):
+        print "Error: kernel length is too close to half of the length of the timeseries. This will result in spurious numerical effects: the effect of a kernel of length L is roughly felt over 2*L+1. Consider revising."
 
     # define the transit time distribution h(tau) owing to several models
     if model == 'Well-Mixed':  # well-mixed reservoir model as in [1,2]
