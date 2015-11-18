@@ -56,7 +56,7 @@ def pseudocoral(lat,lon,SST,SSS,d18O=-1,species="default",b1=0.3007062,b2=0.2619
                     b5 = 0.15   [Tropical Atlantic Ocean/Caribbean]
         Example of use: Call function 'pseudocoral' to calculate d18O_coral timeseries, lacking d18O sw
         but specifying own numeric parameters for a, b.
-        pseudocoral(lat,lon,SST,SSS,-1,a,b1,b2,b3,b4,b5)
+        pseudocoral(lat,lon,SST,SSS,-1,species="default",b1,b2,b3,b4,b5)
     """
 #====================================================================
 
