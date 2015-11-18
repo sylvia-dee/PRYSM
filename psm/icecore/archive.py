@@ -165,25 +165,15 @@ def icecore_diffuse(d18O,b,time,T,P,depth,depth_horizons,dz,drho):
 
 #======================================================================
     # Establish Kernel for convolution of timeseries with a Gaussian
-    
-    # Option 1: just set with arbitrary length
-    #zp=np.arange(-5,5,dz)
-    
-    # Option 2: determine kernel based on shape of Gaussian, so that it is small on either end. 
-    #stop=1E-4
-    #sigma_max=max(sigma)
-    #zp_s=np.sqrt((-2.*sigma_max**2)*np.log(sigma_max*np.sqrt(2.0*np.pi)*stop))
-    #zp=np.arange(-zp_s,zp_s,dz)
-    # (n.b. this seems to result in diffusion being too low)
-    
-    # Option 3: Kernel length as function of z. 
-    # Ensure that kernel length does not exceed length of timeseries when accumulation is low.
-    
-    kernel=0.1*len(z)   
-    zp=np.arange(-kernel,kernel,dz)
+#======================================================================
+    # start out with a very wide kernel and then clip to ensure accurate sampling of Gaussian. 
     # return a warning if the kernel length is approaching 1/2 that of the timeseries. This will result in spurious numerical effects.
-    if (len(zp) > 0.5*len(z)):
-        print "Warning: convolution kernal length (zp) is approaching that of half the length of timeseries. Kernal being clipped to 0.2* timeseries length."
+    
+    zp=np.arange(-100,100,dz)
+    if (len(zp) >= 0.5*len(z)):
+        print "Warning: convolution kernal length (zp) is approaching that of half the length of timeseries. Kernal being clipped."
+        bound=0.249*len(z)*dz
+        zp=np.arange(-bound,bound,dz)
 
 #======================================================================
     # Do the entire calculation on the isotope time series
