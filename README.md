@@ -26,6 +26,7 @@ time uncertainties are used to demonstrate the utility of PRYSM for a broad arra
 
 Dependencies
 ---------------------------
+python 2.7 (https://www.python.org/download/releases/2.7/)
 numpy (http://www.numpy.org/)  
 scipy (http://www.scipy.org/)  
 rpy2 (http://rpy.sourceforge.net/) (For BCHRON)  
