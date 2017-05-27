@@ -97,6 +97,11 @@ def densification(Tavg,bdot,rhos,z):#,model='hljohnsen'):
         # Aslak Grinsted, University of Copenhagen 2010
         # Adapted Sylvia Dee, Brown University, 2017
     '''
+    import numpy as np
+    import scipy
+    from scipy import integrate
+    import matplotlib.pyplot as plt
+    
     rhoi=920. 
     rhoc=550.
     #rhoc=822.
@@ -198,6 +203,10 @@ def icecore_diffuse(d18O,b,time,T,P,depth,depth_horizons,dz,drho):
 # ======================================================================
 # A.0: Initialization
 # ====================================================================== 
+    import numpy as np
+    import scipy
+    from scipy import integrate
+    import matplotlib.pyplot as plt
 
     R=8.314478# Gas constant
     m = 18.02e-3# molar weight of water (in kg)
