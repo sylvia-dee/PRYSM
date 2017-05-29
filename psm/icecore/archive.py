@@ -145,8 +145,8 @@ def densification(Tavg,bdot,rhos,z):#,model='hljohnsen'):
     rho[blowup]=rhoi
 
     #only calculate this if you want zieq
-    tc=(log(rhoi-rhos)-log(rhoi-rhoc))/c0 #age at rho=rhoc [g17]
-    t=zeros(size(z)) #pre allocate a vector for age as a function of z
+    tc=(np.log(rhoi-rhos)-np.log(rhoi-rhoc))/c0 #age at rho=rhoc [g17]
+    t=np.zeros((z.shape)) #pre allocate a vector for age as a function of z
     t[upix]=(np.log(rhoi-rhos)-np.log(rhoi-rho[upix]))/c0 # [g16] above zc
     t[dnix]=(np.log(rhoi-rhoc)-np.log(rhoi+0.0001-rho[dnix]))/c1+tc # [g16] below zc
     tdiff=np.diff(t)
