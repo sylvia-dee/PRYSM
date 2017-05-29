@@ -28,6 +28,14 @@
 # E0. Initialization
 #======================================================================
 import numpy as np
+import scipy
+from scipy import integrate
+import matplotlib.pyplot as plt
+import math
+from math import exp
+from math import sqrt
+from math import *
+
 from psm.icecore.sensor import icecore_sensor
 from psm.icecore.archive import icecore_diffuse
 from psm.agemodels.banded import bam_simul_perturb
