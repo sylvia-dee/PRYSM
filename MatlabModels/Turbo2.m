@@ -11,6 +11,13 @@ function [oriabu,bioabu,oriiso,bioiso] = turbo2(abu,iso,mxl,numb)
 % ORIISO = original isotope signature of both carrier  types 1 and 2
 % BIOISO = bioturbated isotope signature of both carrier types 1 and 2
 % Martin Trauth 18 July 2012
+
+% CITATION:
+% "TURBO2: A MATLAB simulation to study the effects of bioturbation on paleoceanographic time series" 
+%  by Martin H. Trauth, University of Potsdam, published in Computers & Geosciences, 2013
+
+% FULL GITHUB EXAMPLES: https://github.com/cageo/Trauth-2013
+
 nrows = max(mxl)+0;
 ncols = max(abu)+50;
 sedabu = NaN(nrows,ncols);
