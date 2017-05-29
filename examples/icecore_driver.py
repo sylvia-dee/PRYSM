@@ -123,7 +123,8 @@ dz = min(depth_horizons)/10.#or 0.06# stepping in depth (m)
 drho = 0.5# step in density (kg/m^3)
 depth= depth# enter your ice core total depth/length in meters
 
-z, sig, D, time_d, diffs, ice_diffused = icecore_diffuse(d18Oice,b,time,T,P,depth,depth_horizons, dz,drho)
+# Run the archive model:
+z, sigma, D, time_d, diffs, ice_diffused, rho, zieq = icecore_diffuse(d18Oice,b,time,T,P,depth,depth_horizons, dz,drho)
 
 #======================================================================
 # E5. CALL OBSERVATION MODEL
