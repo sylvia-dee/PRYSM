@@ -100,7 +100,7 @@ def bam_simul_perturb(X,t,param=[0.01,0.01],name='poisson',ns=1000,resize=0):
                 num_event_mis = np.random.poisson(param[0]*n,size=(p,1)) # poisson model for missing bands
                 num_event_dbl = np.random.poisson(param[1]*n,size=(p,1)) # poisson model for layers counted multiple times
 
-                        #print num_event_mis[0][0]
+                        #print(num_event_mis[0][0])
                 for ii in range(p):
                     #nnew=n-1
                     jumps = np.random.choice(n-1,num_event_mis[ii][0])+1            # place events uniformly on {2,...,n}
@@ -173,7 +173,7 @@ def bam_simul_perturb(X,t,param=[0.01,0.01],name='poisson',ns=1000,resize=0):
                     Xp[xcount-1,ii,nn]=X[Xcount-1,ii]
                     tmc[xcount-1,ii,nn]=tmc[xcount-1,ii,nn]-1
                     xcount=min(tn,xcount+1)
-                #print Xcount,xcount
+                #print(Xcount,xcount)
 
                 Xp[xcount-1,ii,nn]=X[Xcount-1,ii]
                 xcount=min(tn,xcount+1)

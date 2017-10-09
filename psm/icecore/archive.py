@@ -115,14 +115,14 @@ def densification(Tavg,bdot,rhos,z):#,model='hljohnsen'):
     #Herron-Langway with Johnsen et al 2000 corrections.
     #Small corrections to HL model which are not in Arthern et al. 2010 
 
-    c0=0.85*11*(bdot/rhow)*exp(-10160./(R*Tavg))
-    c1=1.15*575*sqrt(bdot/rhow)*exp(-21400./(R*Tavg))
+    c0=0.85*11*(bdot/rhow)*np.exp(-10160./(R*Tavg))
+    c1=1.15*575*np.sqrt(bdot/rhow)*np.exp(-21400./(R*Tavg))
 
     k0=c0/bdot ##~g4
     k1=c1/bdot
 
     #critical depth at which rho=rhoc
-    zc=(log(rhoc/(rhoi-rhoc))-log(rhos/(rhoi-rhos)))/(k0*rhoi) #g6
+    zc=(np.log(rhoc/(rhoi-rhoc))-np.log(rhos/(rhoi-rhos)))/(k0*rhoi) #g6
 
     ix=z<=zc #find the z's above and below zc
     upix=np.where(ix) #indices above zc
@@ -282,7 +282,7 @@ def icecore_diffuse(d18O,b,time,T,P,depth,depth_horizons,dz,drho):
 
     zp=np.arange(-100,100,dz)
     if (len(zp) >= 0.5*len(z)):
-        print "Warning: convolution kernal length (zp) is approaching that of half the length of timeseries. Kernal being clipped."
+        print("Warning: convolution kernal length (zp) is approaching that of half the length of timeseries. Kernal being clipped.")
         bound=0.20*len(z)*dz
         zp=np.arange(-bound,bound,dz)
 

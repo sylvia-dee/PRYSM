@@ -35,7 +35,7 @@ from psm.aux_functions.analytical_err_simple import analytical_err_simple
 
 #Data directory
 datadir='test_data_coral/' #Don't forget the /
-print 'Loading data from ', datadir,' ...'
+print('Loading data from ', datadir,' ...')
 
 # Load SST anomalies [K] (NOTE: THIS SHOULD BE A 1-D VECTOR OF DATA!)
 # yearly
@@ -55,7 +55,7 @@ time=np.arange(850,1850,1)
 #====================================================================
 # 2. DATA PREP: Exception Handling
 #====================================================================
-print 'Preparing data...'
+print('Preparing data...')
 # 2.1 Convert Lats and Lons to standard format (if they aren't already).
 
 # lon: convert (-180: +180) to (0: 360)
@@ -89,7 +89,7 @@ for i in range(len(sst)):
 #====================================================================
 
 # NOTE: THIS SHOULD BE A 1-D VECTOR OF DATA!
-print 'Running sensor model...'
+print('Running sensor model...')
 coral = np.zeros(len(time))  # this will initialize a [Time x Lat x Lon] matrix of coral values.
 
 # Fill coral array with data same size as input vectors.
@@ -106,7 +106,7 @@ for i in range(len(time)):
 #======================================================================
 
 # 4.1 Specify and model rate of annual layer miscount: BAM (see doctring)
-print 'Running observation model...'
+print('Running observation model...')
 X = coral
 X = X.reshape(len(X),1)
 tp, Xp, tmc=bam_simul_perturb(X,time,param=[0.02,0.02],name='poisson',ns=1000,resize=0)
@@ -123,7 +123,7 @@ sigma=0.1
 coral_Xn=analytical_error(X,sigma)
 #====================================================================
 # Save coral timeseries fields as numpy arrays in current directory.
-print 'Saving time series...'
+print('Saving time series...')
 outdir='./results/'
 np.save(outdir+"simulated_coral_d18O.npy",coral)
 np.save(outdir+"coral_age_perturbed.npy",Xp)
