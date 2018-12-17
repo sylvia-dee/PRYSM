@@ -1,2 +1,2 @@
-import archive
-import sensor
+import psm.icecore.archive
+import psm.icecore.sensor

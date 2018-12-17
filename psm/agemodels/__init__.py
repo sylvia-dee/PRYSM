@@ -1,2 +1,2 @@
-import banded
-import tiepoint
+import psm.agemodels.banded
+import psm.agemodels.tiepoint

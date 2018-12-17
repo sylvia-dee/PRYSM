@@ -48,7 +48,7 @@ from psm.aux_functions.analytical_err_simple import analytical_err_simple
 
 # LOAD TESTER FILES (OPTIONAL) or input your own data here.
 datadir='test_data_icecore/'
-print 'Loading data from ',datadir
+print('Loading data from ',datadir)
 # Near-Surface Air Temp [K]
 T=np.load(datadir+'temperature.npy')
 
@@ -82,7 +82,7 @@ deltaP = d18Op#your precip isotope data would go here
 #======================================================================
 # E3. CALL SENSOR MODEL
 #======================================================================
-print 'Running sensor model...'
+print('Running sensor model...')
 # 4. Apply icecore_sensor to extract precipitation-weighted d18o record for each core
 #    and compute altitude, temperature corrections. (Please see docstring icecore_sensor).
 
@@ -95,7 +95,7 @@ d18Oice  = icecore_sensor(time,d18O,alt_diff)
 #======================================================================
 # E4. CALL ARCHIVE MODEL
 #======================================================================
-print 'Running archive model...'
+print('Running archive model...')
 # This archive model will calculate diffusion and compaction
 # (Please see docstrings: diffusivity, icecore_diffuse)
 
@@ -129,7 +129,7 @@ z, sigma, D, time_d, diffs, ice_diffused, rho, zieq = icecore_diffuse(d18Oice,b,
 #======================================================================
 # E5. CALL OBSERVATION MODEL
 #======================================================================
-print 'Running observation model...'
+print('Running observation model...')
 # 5.1 Specify and model rate of annual layer miscount
 
 X = ice_diffused
@@ -139,7 +139,7 @@ tp, Xp, tmc=bam_simul_perturb(X,t,param=[0.01,0.01],name='poisson',ns=1000,resiz
 #======================================================================
 
 # 5.2: Analytical Uncertainty Model:
-print 'Adding uncertainty...'
+print('Adding uncertainty...')
 #5.2.1 Simple Model: just add uncertainty bands based on measurement precision
 sigma=0.1 # permil, measurement  precision
 ice_upper, ice_lower = analytical_err_simple(X,sigma)
@@ -151,7 +151,7 @@ ice_Xn=analytical_error(X,sigma)
 
 #====================================================================
 # Save whatever needs to be saved
-print 'Saving data...'
+print('Saving data...')
 outdir='./results/'
 np.save(outdir+"ice_Xn.npy",ice_Xn)
 np.save(outdir+"ice_diffused.npy",ice_diffused)

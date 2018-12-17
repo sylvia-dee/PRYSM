@@ -1,1 +1,1 @@
-import sensor
+import psm.cellulose.sensor

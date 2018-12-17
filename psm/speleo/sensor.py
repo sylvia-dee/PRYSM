@@ -61,7 +61,7 @@ def speleo_sensor(dt,d18O,T,model='Adv-Disp',tau0=0.5,Pe=1.0):
 
     timeseries_len=len(d18O)*dt
     if (tau0>=(0.5*timeseries_len)):
-        print "Warning: mean residence time (tau0) is too close to half of the length of the timeseries."
+        print("Warning: mean residence time (tau0) is too close to half of the length of the timeseries.")
 
 	# establish kernel length for transit time distribution
 	# tau=np.arange(20.*tau0) {SDEE: revised 11/17/15}
@@ -73,7 +73,7 @@ def speleo_sensor(dt,d18O,T,model='Adv-Disp',tau0=0.5,Pe=1.0):
 	# np.convolve method will not function correctly if the length of the kernel approaches that of the series. 
 
     if (len(tau)>=(0.5*timeseries_len)):
-        print "Error: kernel length is too close to half of the length of the timeseries. This will result in spurious numerical effects: the effect of a kernel of length L is roughly felt over 2*L+1. Consider revising."
+        print("Error: kernel length is too close to half of the length of the timeseries. This will result in spurious numerical effects: the effect of a kernel of length L is roughly felt over 2*L+1. Consider revising.")
 
     # define the transit time distribution h(tau) owing to several models
     if model == 'Well-Mixed':  # well-mixed reservoir model as in [1,2]
@@ -82,7 +82,7 @@ def speleo_sensor(dt,d18O,T,model='Adv-Disp',tau0=0.5,Pe=1.0):
         h = adv_disp_transit(tau,tau0,Pe)
         h[0] = adv_disp_transit(1e-3,tau0,Pe) # fix the pathological case at tau = 0
     else:
-        print "Error: model " + model + " not found"
+        print("Error: model " + model + " not found")
 
     # obtain normalization constant using Simpson's rule
     hint = si.simps(h,tau)
