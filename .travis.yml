@@ -1,0 +1,65 @@
+env:
+  matrix:
+  - TRAVIS_PYTHON_VERSION="2.7"
+  - TRAVIS_PYTHON_VERSION="3.5"
+  - TRAVIS_PYTHON_VERSION="3.6"
+  - TRAVIS_PYTHON_VERSION="3.7"
+  global:
+  - CONDA_PREFIX=$HOME/miniconda
+  - MINICONDA_URL_BASE="https://repo.continuum.io/miniconda/Miniconda3-latest"
+
+os:
+  - linux
+  - osx
+
+before_install:
+  - |
+    if [[ $TRAVIS_OS_NAME == "osx" ]]; then
+      brew remove --force $(brew list)
+      brew cleanup -s
+      rm -rf $(brew --cache)
+    fi
+  - |
+    if [[ "$TRAVIS_TAG" == v* ]]; then
+      CIBUILD=1
+    fi
+  - |
+    if [[ "$TRAVIS_BRANCH" == "master" ]]; then
+      CIBUILD=1
+    fi
+
+install:
+  - echo "Build on $TRAVIS_OS_NAME for Python $TRAVIS_PYTHON_VERSION"
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      OS="MacOSX-x86_64"
+    else
+      OS="Linux-x86_64"
+    fi
+  - curl $MINICONDA_URL_BASE-$OS.sh > $HOME/minconda.sh
+  - bash $HOME/minconda.sh -b -p $CONDA_PREFIX
+  - export PATH="$CONDA_PREFIX/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no --set anaconda_upload no
+  - conda config --append channels conda-forge
+  - conda update -q conda
+  - conda info -a
+
+  # Create new env and install deps
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy scipy matplotlib pytest pytest-cov coveralls
+  - source activate test-environment
+  - hash -r
+
+script:
+  - pytest
+
+after_success:
+  # - |
+  #   if [[ "$CIBUILD" == "1" ]]; then
+  #     conda install -q conda-build anaconda-client
+  #     pip install twine wheel
+  #   fi
+  # - coveralls
+  # - python .ci/travis/anaconda_build_upload.py
+  # - python .ci/travis/pypi_build_upload.py
+  - echo "Success!"
