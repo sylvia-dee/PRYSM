@@ -1,0 +1,32 @@
+package:
+  name: prysm
+  version: "{{ load_setup_py_data().version }}"
+
+source:
+  path: ../..
+
+requirements:
+  build:
+    - setuptools
+    - python
+    - numpy >=1.11
+    - matplotlib
+
+  run:
+    - python
+    - numpy >=1.11
+    - scipy
+    - matplotlib
+
+test:
+  # we don't run these tests during build (see --no-test on anaconda_build.sh)
+  requires:
+    - pytest
+  commands:
+    - pytest
+
+build:
+  number: 0
+  # we don't define the build script here, 
+  # but instead use the bld.bat and build.sh scripts
+  # script: SEE SCRIPTS
