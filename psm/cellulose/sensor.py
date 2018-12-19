@@ -72,7 +72,7 @@ class CelluloseSensor(object):
             self._model = self._RodenModel(self._RH, self._d18Os, self._d18Ov)
         elif self._model_flag in [1, 'evans']:    
             self._model = self._EvansModel(self._T, self._P, self._RH, self._d18Os,
-                                          self._d18Ov, self._iso)
+                                          self._d18Ov, iso=self._iso)
         else:
             raise ValueError('invalid model selection')
 
@@ -90,7 +90,8 @@ class CelluloseSensor(object):
         Allows user to change relative humidity to the recompute model 
         without needing to reinitialize the entire model.
         """ 
-        self._model.RH = value
+        self._RH = value
+        self._model.RH = self._RH
 
 
     def set_d18Os(self, value): 
@@ -98,7 +99,8 @@ class CelluloseSensor(object):
         Allows user to change soil moisture isotope ratio to recompute model 
         without needing to reinitialize the entire model. 
         """ 
-        self._model.d180s = value
+        self._d18Os = value
+        self._model.d180s = self._d18Os
 
 
     def set_d18Ov(self, value): 
@@ -106,7 +108,8 @@ class CelluloseSensor(object):
         Allows user to change vapor isotope ratio to recompute model 
         without needing to reinitialize the entire model. 
         """ 
-        self._model.d180s = value
+        self._d18Ov = value
+        self._model.d180v = self._d18Ov
 
 
     class _RodenModel(object):
@@ -157,6 +160,7 @@ class CelluloseSensor(object):
             self.RH = RH
             self.d18Os = d18Os
             self.d18Ov = d18Ov
+            self.iso = iso
 
 
         def run(self):
@@ -184,7 +188,7 @@ class CelluloseSensor(object):
             lt = c3 + c4 * self.ta # leaf temperature
             tc = -c6 * c5 + 273.15 + self.ta
             alv = np.exp(1137.0 / tc**2.0 - 0.4156 / tc - 0.00207)            
-            if iso:
+            if self.iso:
                 # Option 1: Use Isotope-Enabled Model Output for dS, dV
                 o18sw = self.d18Os
                 o18wva = self.d18Ov
@@ -205,7 +209,7 @@ class CelluloseSensor(object):
 
             # Environmental Conditions
             svpa = (6.13753*np.exp(self.ta*((18.564-(self.ta/254.4)))/(self.ta+255.57))) # saturated vapour pressure of the air (mbar)
-            avpa = (rh/100.)*svpa             # actual vapour pressure of the air (mbar)
+            avpa = (self.RH/100.)*svpa             # actual vapour pressure of the air (mbar)
             rsw = ((o18sw/1000.)+1.)*rsmow    # 18O/16O of source water
             rwv = ((o18wva/1000.)+1.)*rsmow   # 18O/16O of water vapour
             do18wvs = ((rwv/rsw)-1.)*1000.    # delta 18O of water vapour (per mil, wrt source water)
