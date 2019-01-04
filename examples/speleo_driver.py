@@ -34,15 +34,15 @@ from rpy2.robjects import FloatVector
 from rpy2.robjects.vectors import StrVector
 from rpy2.robjects.packages import importr
 
-rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+#rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 ## for Palatino and other serif fonts use:
 #rc('font',**{'family':'serif','serif':['Palatino']})
-rc('text', usetex=True)
+#rc('text', usetex=True)
 
 #==============================================================
 # E1. Load input data
 #==============================================================
-print 'Loading data...'
+print('Loading data...')
 # Note: for the tester files, the data corresponds to Borneo
 # output is from SPEEDY-IER
 # USER should please load your own data here!
@@ -61,7 +61,7 @@ dt=1.0
 #==========================================================================
 # E2. APPLY SENSOR MODEL
 #==========================================================================
-print 'Running sensor model...'
+print('Running sensor model...')
 model = 'Adv-Disp'
 Pe   = 1.0  # Peclet number
 tau0 = 1.0  # mean aquifer transit time
@@ -93,7 +93,7 @@ K4     = bwf.filter(d18O_ad2,fc)
 #==========================================================================
 # E3. APPLY OBSERVATION MODEL
 #==========================================================================
-print 'Running observation model...'
+print('Running observation model...')
 
 r = robjects.r
 
@@ -123,7 +123,7 @@ chronCE = np.fliplr(1950 - chronBP)
 #==========================================================================
 
 # 3.2: Analytical Uncertainty Model:
-print 'Adding uncertainty...'
+print('Adding uncertainty...')
 #Enter final simulated speleothem record (choose from above options)
 X=d18O_wm1
 #X=d18O_wm2
@@ -139,7 +139,7 @@ speleo_Xn=analytical_error(X,sigma)
 
 #====================================================================
 # Save whatever needs to be saved
-print 'Saving data...'
+print('Saving data...')
 outdir='./results/'
 np.save(outdir+"speleo_Xn.npy",speleo_Xn)
 #Whatever else...
