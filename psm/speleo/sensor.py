@@ -105,7 +105,8 @@ def speleo_sensor(t,d18O,T,dt,model='Adv-Disp',tau0=1.0,Pe=1.0):
 
     # Shrink the exponential such that it doesn't add spurious variance to the resulting dripwater signal.
     hmax=max(np.abs(d18O-d18Om))
-    h=h/hmax
+    #h=h/hmax
+    h = h/np.sum(h)
 
     #convolve d18O input with the transit time distribution (Green's function of the problem)
     # this yields the d18O of aquifer water, after passage through the karst
